@@ -6,12 +6,11 @@ const ChatArea = () => {
   const { messages, sendMessage } = useChat({
     transport: new DefaultChatTransport({
         // api: "http://localhost:3000/api/chat",
-      api: `https://vecel-ai-sdk-server.vercel.app/api/chat`,
+      api: `${process.env.NEXT_PUBLIC_API_URL!}/api/chat`,
       headers: { "Content-Type": "application/json" },
     }),
   });
   const [input, setInput] = useState("");
-  console.log("messages" , messages)
   return (
     <div className="flex flex-col  w-full max-w-md p-5  mx-auto ">
       <div className="overflow-y-auto h-[800px]">

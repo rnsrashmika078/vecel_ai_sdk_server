@@ -12,7 +12,7 @@ const ChatArea = () => {
     const assistId = uuid();
 
     setMessage((prev) => [...prev, { id, message: prompt, role: "user" }]);
-    const res = await fetch(`${process.env.NEXT_API_URL}/api/generate/chat`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/generate/chat`, {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -25,7 +25,6 @@ const ChatArea = () => {
       { id: assistId, message: result.reply, role: "assistant" },
     ]);
 
-    console.log(result);
   };
   return (
     <div className="flex justify-between flex-col w-full h-[calc(100%-2rem)]">
