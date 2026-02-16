@@ -2,10 +2,6 @@
 import { useChat } from "@ai-sdk/react";
 import { useState } from "react";
 import { DefaultChatTransport, type UIMessage } from "ai";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
-import ReactMarkdown from "react-markdown";
-
 const ChatArea = () => {
   const { messages, sendMessage } = useChat({
     transport: new DefaultChatTransport({
@@ -25,9 +21,6 @@ const ChatArea = () => {
               message.role === "user" ? "items-end " : "items-start "
             }`}
           >
-            {/* <p className="text-[10px] flex w-fit">
-            {message.role === "user" ? "You" : "AI"}
-          </p> */}
             <div
               className={` custom-scrollbar ${
                 message.role === "user" ? "bg-gray-900 p-2 rounded-xl " : " "
@@ -41,80 +34,9 @@ const ChatArea = () => {
                         key={`${message.id}-${i}`}
                         className="custom-scrollbar"
                       >
-                        <ReactMarkdown
-                          components={{
-                            h1: ({ children, ...props }) => (
-                              <h1
-                                className="text-white text-2xl font-bold"
-                                {...props}
-                              >
-                                {children}
-                              </h1>
-                            ),
-                            h2: ({ children, ...props }) => (
-                              <h2
-                                className="text-white text-xl font-semibold"
-                                {...props}
-                              >
-                                {children}
-                              </h2>
-                            ),
-                            p: ({ children, ...props }) => (
-                              <p className="text-white" {...props}>
-                                {children}
-                              </p>
-                            ),
-                            ul: ({ children, ...props }) => (
-                              <ul
-                                className="text-white list-disc ml-5"
-                                {...props}
-                              >
-                                {children}
-                              </ul>
-                            ),
-                            ol: ({ children, ...props }) => (
-                              <ol
-                                className="text-white list-decimal"
-                                {...props}
-                              >
-                                {children}
-                              </ol>
-                            ),
-                            li: ({ children, ...props }) => (
-                              <li className="text-white" {...props}>
-                                {children}
-                              </li>
-                            ),
-                            code({ className, children }) {
-                              const match = /language-(\w+)/.exec(
-                                className || ""
-                              );
-
-                              if (match) {
-                                return (
-                                  <SyntaxHighlighter
-                                    style={vscDarkPlus}
-                                    language={match[1]}
-                                    PreTag="div"
-                                  >
-                                    {String(children).replace(/\n$/, "")}
-                                  </SyntaxHighlighter>
-                                );
-                              }
-                              return (
-                                <code className="bg-zinc-600 px-1 rounded">
-                                  {children}
-                                </code>
-                              );
-                            },
-                          }}
-                        >
-                          {part.text}
-                        </ReactMarkdown>
+                        {part.text}
                       </div>
                     );
-                  case "tool-weatherTool":
-                    return <p>{JSON.stringify(part.output)}</p>;
                 }
               })}
             </div>
