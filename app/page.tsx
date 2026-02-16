@@ -11,6 +11,7 @@ const ChatArea = () => {
     }),
   });
   const [input, setInput] = useState("");
+  console.log("messages" , messages)
   return (
     <div className="flex flex-col  w-full max-w-md p-5  mx-auto ">
       <div className="overflow-y-auto h-[800px]">
