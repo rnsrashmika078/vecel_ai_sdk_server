@@ -1,5 +1,5 @@
 "use client";
-import { use, useState } from "react";
+import { useState } from "react";
 import { ChatAreaType } from "../types/type";
 import { v4 as uuid } from "uuid";
 

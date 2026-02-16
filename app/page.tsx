@@ -2,7 +2,6 @@
 import { useChat } from "@ai-sdk/react";
 import { useState } from "react";
 import { DefaultChatTransport, type UIMessage } from "ai";
-import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import ReactMarkdown from "react-markdown";
@@ -43,7 +42,6 @@ const ChatArea = () => {
                         className="custom-scrollbar"
                       >
                         <ReactMarkdown
-                          remarkPlugins={[remarkGfm]}
                           components={{
                             h1: ({ children, ...props }) => (
                               <h1
