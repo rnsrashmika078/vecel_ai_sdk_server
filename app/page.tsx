@@ -5,8 +5,8 @@ import { DefaultChatTransport, type UIMessage } from "ai";
 const ChatArea = () => {
   const { messages, sendMessage } = useChat({
     transport: new DefaultChatTransport({
-      //   api: "http://localhost:3000/api/chat",
-      api: `${process.env.NEXT_API_URL!}/api/chat`,
+        // api: "http://localhost:3000/api/chat",
+      api: `https://vecel-ai-sdk-server.vercel.app/api/chat`,
       headers: { "Content-Type": "application/json" },
     }),
   });

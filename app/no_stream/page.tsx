@@ -12,7 +12,7 @@ const ChatArea = () => {
     const assistId = uuid();
 
     setMessage((prev) => [...prev, { id, message: prompt, role: "user" }]);
-    const res = await fetch("http://localhost:3000/api/generate/chat", {
+    const res = await fetch(`${process.env.NEXT_API_URL}/api/generate/chat`, {
       method: "POST",
       headers: {
         "Content-type": "application/json",
