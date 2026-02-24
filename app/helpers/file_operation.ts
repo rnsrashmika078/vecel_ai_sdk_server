@@ -1,8 +1,8 @@
 import { writeFileSync } from "fs";
 import path from "path";
 
-export async function createFile(name: string, ext: string, content: string) {
-  const modified = `public/files/${name}.${ext}`;
+export async function createFile(name: string, content: string) {
+  const modified = `public/files/${name}`;
   const project_dir = process.cwd();
   const newPath = path.join(project_dir, modified);
 

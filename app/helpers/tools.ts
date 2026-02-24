@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { promise, z } from "zod";
 import { tool as createTool } from "ai";
 import { createFile } from "./file_operation";
 import { groq } from "@ai-sdk/groq";
@@ -21,31 +21,28 @@ export const weatherTool = createTool({
 export const createFileTool = createTool({
   description: "create a file in desktop",
   inputSchema: z.object({
-    name: z.string().describe("name for file"),
-    extension: z.string().describe("file extension"),
+    name: z.string().describe("name with extension"),
     content: z.string().describe("file content"),
   }),
-  execute: async ({ name, extension, content }) => {
-    await createFile(name, extension, content);
-    return { name, extension };
+  execute: async ({ name, content }) => {
+    await createFile(name, content);
+    return { name };
   },
 });
 export const createChartTool = createTool({
   description: "display or generate chart about user given topic",
   inputSchema: z.object({
-    data: z.array(
-      z.object({
-        month: z.string(),
-        sales: z.number(),
-      })
-    ),
+    data: z.array(z.any()).describe("chat data"),
+    xKey: z.string().describe("X axis key"),
+    yKey: z.string().describe("Y axis key"),
   }),
-  execute: async ({ data }) => {
-    return data;
+  execute: async ({ data, xKey, yKey }) => {
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+    return { data, xKey, yKey };
   },
 });
 export const imageRecognitionTool = createTool({
-  description: "Returns a description of an image from its URL",
+  description: "ask questions related to the image url",
   inputSchema: z.object({
     url: z.string().describe("user given image url"),
   }),
@@ -64,6 +61,7 @@ export const imageRecognitionTool = createTool({
         },
       ],
     });
+
     return groqResult.choices[0].message.content;
   },
 });

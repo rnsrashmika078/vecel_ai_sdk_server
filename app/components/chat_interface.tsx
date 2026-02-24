@@ -15,12 +15,21 @@ import Chart from "./ai-components/chart";
 import { FileType } from "../types/type";
 import { CloudinaryUpload } from "../helpers/cloudinary";
 import InputArea from "./input";
-import { BiPlus } from "react-icons/bi";
+import { BiPlus, BiSend, BiStop } from "react-icons/bi";
 import { FcDocument } from "react-icons/fc";
 import Skeleton from "./skeleton";
+import { GrResume } from "react-icons/gr";
 
 const ChatInterface = () => {
-  const { messages, sendMessage } = useChat({
+  const {
+    messages,
+    sendMessage,
+    stop,
+    status,
+    resumeStream,
+    regenerate,
+    error,
+  } = useChat({
     transport: new DefaultChatTransport({
       api: `${process.env.NEXT_PUBLIC_API_URL!}/api/chat`,
       // api: `https://vecel-ai-sdk-server.vercel.app/api/chat`,
@@ -46,11 +55,13 @@ const ChatInterface = () => {
     }
   };
   const fileTypes = ["png", "jpg"];
+  console.log("messages", messages);
 
   return (
     <div className="flex custom-scrollbar p-5 relative h-full">
       <div className="flex  px-5 flex-col sm:max-w-xl w-full mx-auto h-full flex-shrink justify-between">
-        {/* <Chart /> */}
+        {/* <Chart  /> */}
+
         <div className="custom-scroll-bar py-5">
           <input
             ref={inputRef}
@@ -80,8 +91,6 @@ const ChatInterface = () => {
                   {message.parts.map((part, index) => {
                     let parse = null;
                     if (part.type === "text" && message.role === "user") {
-                      console.log("message", part.text);
-
                       try {
                         parse =
                           message.role === "user"
@@ -90,8 +99,6 @@ const ChatInterface = () => {
                       } catch (e) {
                         console.log("parse error", e);
                       }
-
-                      console.log("parsed message", parse.url);
                     }
 
                     if (part.type === "text") {
@@ -111,7 +118,7 @@ const ChatInterface = () => {
                             remarkPlugins={[remarkGfm]}
                             components={{
                               p: ({ children }) => (
-                                <p className="leading-relaxed text-white">
+                                <p className="leading-relaxed py-1 text-white">
                                   {children}
                                 </p>
                               ),
@@ -135,7 +142,7 @@ const ChatInterface = () => {
                               ),
 
                               strong: ({ children }) => (
-                                <strong className=" font-bold text-white">
+                                <strong className="font-bold text-white">
                                   {children}
                                 </strong>
                               ),
@@ -229,6 +236,7 @@ const ChatInterface = () => {
                         </div>
                       );
                     }
+
                     if (part.type === "tool-displayWeather") {
                       switch (part.state) {
                         case "input-available":
@@ -271,6 +279,7 @@ const ChatInterface = () => {
                           return null;
                       }
                     }
+
                     if (part.type === "tool-imageRecognitionTool") {
                       switch (part.state) {
                         case "input-available":
@@ -294,11 +303,18 @@ const ChatInterface = () => {
                             </div>
                           );
                         case "output-available":
-                          return (
-                            <div key={index} className="w-full">
-                              <Chart data={part.output} />
-                            </div>
-                          );
+                          if (status === "ready") {
+                            return (
+                              <div key={index} className="w-full">
+                                {/* @ts-expect-error:data shape mismatch */}
+                                <Chart data={part.output} />
+                              </div>
+                            );
+                          } else {
+                            return (
+                              <Spinner key={0} text="Finalizing Chat..!" />
+                            );
+                          }
                         case "output-error":
                           return <div key={index}>Error: {part.errorText}</div>;
                         default:
@@ -331,9 +347,17 @@ const ChatInterface = () => {
           }}
         >
           <InputArea input={input} setInput={setInput}>
-            <div className="absolute top-1/2 left-5 -translate-x-1/2 -translate-y-1/2 hover:border-[#3e3e3e] p-2">
+            <div className="absolute top-1/2 left-5 -translate-x-1/2  -translate-y-1/2 hover:border-[#3e3e3e] p-2">
               <BiPlus size={20} onClick={() => inputRef.current?.click()} />
             </div>
+            <div className="absolute top-1/2 right-0  -translate-y-1/2 hover:border-[#3e3e3e] p-2">
+              {status === "streaming" && (
+                <BiStop size={20} onClick={() => stop()} />
+              )}
+            </div>
+            {/* <div className="absolute top-1/2 right-15  -translate-y-1/2 hover:border-[#3e3e3e] p-2">
+              <GrResume size={20} onClick={() => regenerate()} />
+            </div> */}
             <div
               className={`absolute  left-2 ${
                 file?.format === "pdf" ? "-top-15" : "-top-28"

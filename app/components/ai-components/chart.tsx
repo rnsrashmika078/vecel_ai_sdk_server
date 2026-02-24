@@ -2,6 +2,7 @@
 "use client";
 import React, { useMemo } from "react";
 import {
+  Label,
   Line,
   LineChart,
   ResponsiveContainer,
@@ -9,23 +10,21 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-
-const Chart = ({ data }: any) => {
-  // const datas = [
-  //   { "month": "Jan", "sales": 12 },
-  //   { "month": "Feb", "sales": 19 },
-  //   { "month": "Mar", "sales": 5 },
-  //   { "month": "Apr", "sales": 17 },
-  // ];
-  //   const memoData = useMemo(() => data, [data]); // avoid unnecessary rerenders
-  console.log("data", data);
+interface ChartProps {
+  data: { data: any; xKey: any; yKey: any };
+}
+const Chart = ({ data }: ChartProps) => {
   return (
-    <ResponsiveContainer width="100%" height={300}>
-      <LineChart data={data}>
-        <XAxis dataKey="month" />
-        <YAxis />
+    <ResponsiveContainer width="100%" height={300} className="mb-5">
+      <LineChart data={data.data}  className="">
+        <XAxis dataKey={data.xKey}>
+          <Label value={data.xKey} position="insideBottom" offset={-5} />
+        </XAxis>
+        <YAxis>
+          <Label value={data.yKey} angle={-90} position="insideLeft" />
+        </YAxis>
         <Tooltip />
-        <Line type="monotone" dataKey="sales" stroke="blue" />
+        <Line type="monotone" dataKey={data.yKey} stroke="blue" />
       </LineChart>
     </ResponsiveContainer>
   );

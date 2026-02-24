@@ -4,15 +4,14 @@ import { MdOpenInNew } from "react-icons/md";
 type GenFileType = {
   name?: string;
   content?: string;
-  extension?: string;
 };
-const GenFile = ({ name = "Ozone", extension = "txt" }: GenFileType) => {
-  const link = `/files/${name}.${extension}`;
+const GenFile = ({ name = "Ozone" }: GenFileType) => {
+  const link = `/files/${name}`;
   return (
     <div className="p-5 bg-black border border-gray-900 w-full flex rounded-xl mb-5 justify-between">
       <div className="flex items-center gap-2">
         <FaFileLines size={25} />
-        <p className="text-sm">{`${name}.${extension}`}</p>
+        <p className="text-sm">{`${name}`}</p>
       </div>
       {/*  rel="noopener noreferrer" */}
       {/*  Safe from tab hijacking 
