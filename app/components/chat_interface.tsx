@@ -49,7 +49,7 @@ const ChatInterface = () => {
 
   return (
     <div className="flex custom-scrollbar p-5 relative h-full">
-      <div className="flex  px-5 flex-col sm:max-w-2xl w-full mx-auto h-full flex-shrink justify-between">
+      <div className="flex  px-5 flex-col sm:max-w-xl w-full mx-auto h-full flex-shrink justify-between">
         {/* <Chart /> */}
         <div className="custom-scroll-bar py-5">
           <input
@@ -99,7 +99,7 @@ const ChatInterface = () => {
                         <div key={index}>
                           {parse?.url && (
                             <img
-                              src={parse?.url  ?? "./image.png"}
+                              src={parse?.url ?? "./image.png"}
                               width={150}
                               height={150}
                               alt="upload file"
@@ -263,6 +263,20 @@ const ChatInterface = () => {
                             <div key={index} className="w-full">
                               {/*@ts-expect-error: ignore error for now (Ts error) */}
                               <GenFile {...part.output} />
+                            </div>
+                          );
+                        case "output-error":
+                          return <div key={index}>Error: {part.errorText}</div>;
+                        default:
+                          return null;
+                      }
+                    }
+                    if (part.type === "tool-imageRecognitionTool") {
+                      switch (part.state) {
+                        case "input-available":
+                          return (
+                            <div key={index}>
+                              <Spinner text="Analyzing image...!" />
                             </div>
                           );
                         case "output-error":
