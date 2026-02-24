@@ -1,24 +1,18 @@
-import { streamText, UIMessage, convertToModelMessages, tool } from "ai";
+import { streamText, UIMessage, convertToModelMessages, stepCountIs } from "ai";
 import { groq } from "@ai-sdk/groq";
-import { createFile, weatherTool } from "@/app/helpers/tools";
-
+import { tools } from "@/app/helpers/tools";
 export async function POST(req: Request) {
   try {
     const { messages }: { messages: UIMessage[] } = await req.json();
 
-    console.log("messages", messages);
     const result = streamText({
-      // model: groq("openai/gpt-oss-20b"),
-      model: groq("llama-3.3-70b-versatile"),
-      system:
-        "When you call a tool, you MUST answer the user using the tool result.",
-      tools: {
-        weatherTool,
-        createFile,
-      },
+      model: groq("openai/gpt-oss-20b"),
+      // model: groq("llama-3.3-70b-versatile"),
+      system: `You are a helpful assistant. use tool if user ask only`,
+      tools,
       messages: await convertToModelMessages(messages),
+      stopWhen: stepCountIs(5),
     });
-    console.log("result", result);
 
     return result.toUIMessageStreamResponse();
   } catch (err) {

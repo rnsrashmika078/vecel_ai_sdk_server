@@ -1,0 +1,5 @@
+GeForce RTX 3090
+GeForce RTX 3080
+GeForce RTX 3070
+GeForce RTX 3060 Ti
+GeForce RTX 2080 Ti
