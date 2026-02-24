@@ -55,13 +55,12 @@ const ChatInterface = () => {
     }
   };
   const fileTypes = ["png", "jpg"];
-  console.log("messages", messages);
+  console.log("status", status);
 
   return (
     <div className="flex custom-scrollbar p-5 relative h-full">
       <div className="flex  px-5 flex-col sm:max-w-xl w-full mx-auto h-full flex-shrink justify-between">
         {/* <Chart  /> */}
-
         <div className="custom-scroll-bar py-5">
           <input
             ref={inputRef}

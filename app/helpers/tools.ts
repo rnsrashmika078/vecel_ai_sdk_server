@@ -1,8 +1,7 @@
 import { promise, z } from "zod";
 import { tool as createTool } from "ai";
 import { createFile } from "./file_operation";
-import { groq } from "@ai-sdk/groq";
-import Groq from "groq-sdk";
+import { groq } from "../libs/groqClient";
 
 //request weather info ( just for testing )
 export const weatherTool = createTool({
@@ -19,7 +18,7 @@ export const weatherTool = createTool({
 
 //create a file ( just for testing )
 export const createFileTool = createTool({
-  description: "create a file in desktop",
+  description: "create a file",
   inputSchema: z.object({
     name: z.string().describe("name with extension"),
     content: z.string().describe("file content"),
@@ -30,7 +29,7 @@ export const createFileTool = createTool({
   },
 });
 export const createChartTool = createTool({
-  description: "display or generate chart about user given topic",
+  description: "display chart about user given topic",
   inputSchema: z.object({
     data: z.array(z.any()).describe("chat data"),
     xKey: z.string().describe("X axis key"),
@@ -47,10 +46,10 @@ export const imageRecognitionTool = createTool({
     url: z.string().describe("user given image url"),
   }),
   execute: async ({ url }) => {
-    const groq = new Groq();
     const groqResult = await groq.chat.completions.create({
       model: "meta-llama/llama-4-scout-17b-16e-instruct",
       stream: false,
+      max_completion_tokens: 500,
       messages: [
         {
           role: "user",
@@ -65,9 +64,41 @@ export const imageRecognitionTool = createTool({
     return groqResult.choices[0].message.content;
   },
 });
+export const webSearchTool = createTool({
+  description: "web search tool",
+  inputSchema: z.object({
+    user_prompt: z
+      .string()
+      .describe("user prompt related to web-search or visit-website"),
+  }),
+  execute: async ({ user_prompt }) => {
+    const groqResult = await groq.chat.completions.create({
+      messages: [
+        {
+          role: "user",
+          content: user_prompt,
+        },
+      ],
+      model: "groq/compound-mini",
+      temperature: 1,
+      max_completion_tokens: 500,
+      top_p: 1,
+      stream: false,
+      stop: null,
+      compound_custom: {
+        tools: {
+          enabled_tools: ["web_search", "visit_website"],
+        },
+      },
+    });
+
+    return groqResult.choices[0].message.content;
+  },
+});
 export const tools = {
   displayWeather: weatherTool,
   createFileTool,
   createChartTool,
   imageRecognitionTool,
+  webSearchTool,
 };

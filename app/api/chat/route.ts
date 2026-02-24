@@ -14,6 +14,9 @@ export async function POST(req: Request) {
       stopWhen: stepCountIs(5),
     });
 
+    const tokens = await result.usage;
+    console.log("total tokens", tokens);
+
     return result.toUIMessageStreamResponse();
   } catch (err) {
     console.log(err);
