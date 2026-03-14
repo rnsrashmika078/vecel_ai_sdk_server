@@ -19,6 +19,8 @@ import { BiPlus, BiSend, BiStop } from "react-icons/bi";
 import { FcDocument } from "react-icons/fc";
 import Skeleton from "./skeleton";
 import { GrResume } from "react-icons/gr";
+import { splitter } from "../libs/splitter";
+import { embeddings } from "../libs/embeddingsHF";
 
 const ChatInterface = () => {
   const {
@@ -45,17 +47,24 @@ const ChatInterface = () => {
   const handleFileupload = async (e: ChangeEvent<HTMLInputElement>) => {
     const file: File | undefined = e.target.files?.[0];
     if (file) {
-      console.log("still inside");
       setLoading(true);
       const payload = await CloudinaryUpload(file);
-      console.log("payload", payload);
       setFile(payload);
       e.target.value = "";
       setLoading(false);
     }
   };
   const fileTypes = ["png", "jpg"];
-  console.log("status", status);
+
+  const splitterFn = async () => {
+    const res = await fetch("/api/emb/retrive", {
+      method: "POST",
+      // headers: {
+      //   "Content-type": "application/json",
+      // },
+      body: JSON.stringify({ text: input }),
+    });
+  };
 
   return (
     <div className="flex custom-scrollbar p-5 relative h-full">
@@ -192,7 +201,6 @@ const ChatInterface = () => {
                                   {children}
                                 </pre>
                               ),
-
                               code: ({ className, children, ...props }) => {
                                 const codeId = uuid();
                                 const isBlock =
@@ -200,23 +208,8 @@ const ChatInterface = () => {
 
                                 return isBlock ? (
                                   <pre className="relative ebg-black/80 p-4 rounded-lg overflow-x-auto my-3 text-sm">
-                                    <span className="absolute top-0 right-0">
-                                      {/* <BiCopy
-                                  size={20}
-                                  onClick={() => {
-                                    const text =
-                                      codeRefs.current[codeId]?.textContent ||
-                                      "";
-                                    navigator.clipboard.writeText(text);
-                                  }}
-                                /> */}
-                                    </span>
-                                    <code
-                                      className="text-blue-400"
-                                      // ref={(el) => {
-                                      //   if (el) codeRefs.current[codeId] = el;
-                                      // }}
-                                    >
+                                    <span className="absolute top-0 right-0"></span>
+                                    <code className="text-blue-400">
                                       {children}
                                     </code>
                                   </pre>
@@ -331,18 +324,19 @@ const ChatInterface = () => {
           className="sticky  -bottom-0 sm:max-w-xl w-full"
           onSubmit={(e) => {
             e.preventDefault();
-            if (file?.url) {
-              const message = `{"url": "${file?.url}", "input" :"${input}"}`;
-              sendMessage({ text: message });
-              setInput("");
-              setFile(null);
-              return;
-            }
-            sendMessage({
-              text: `{"input" :"${input}"}`,
-            });
-            setInput("");
-            setFile(null);
+            // if (file?.url) {
+            //   const message = `{"url": "${file?.url}", "input" :"${input}"}`;
+            //   sendMessage({ text: message });
+            //   setInput("");
+            //   setFile(null);
+            //   return;
+            // }
+            // sendMessage({
+            //   text: `{"input" :"${input}"}`,
+            // });
+            // setInput("");
+            // setFile(null);
+            splitterFn();
           }}
         >
           <InputArea input={input} setInput={setInput}>

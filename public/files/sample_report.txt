@@ -1,8 +1,0 @@
-Sample Report
-
-| ID | Name | Value |
-| 1 | A | 10 |
-| 2 | B | 20 |
-| 3 | C | 30 |
-| 4 | D | 40 |
-| 5 | E | 50 |

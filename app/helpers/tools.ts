@@ -69,7 +69,7 @@ export const webSearchTool = createTool({
   inputSchema: z.object({
     user_prompt: z
       .string()
-      .describe("user prompt related to web-search or visit-website"),
+      .describe("prompt"),
   }),
   execute: async ({ user_prompt }) => {
     const groqResult = await groq.chat.completions.create({
@@ -81,7 +81,7 @@ export const webSearchTool = createTool({
       ],
       model: "groq/compound-mini",
       temperature: 1,
-      max_completion_tokens: 500,
+      max_completion_tokens: 200,
       top_p: 1,
       stream: false,
       stop: null,
