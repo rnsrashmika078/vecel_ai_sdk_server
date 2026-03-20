@@ -2,6 +2,8 @@ import { promise, z } from "zod";
 import { tool as createTool } from "ai";
 import { createFile } from "./file_operation";
 import { groq } from "../libs/groqClient";
+import { storeEmbeddings } from "../actions/store";
+import { retriveEmbeddings } from "../actions/retrive";
 
 //request weather info ( just for testing )
 export const weatherTool = createTool({
@@ -67,9 +69,7 @@ export const imageRecognitionTool = createTool({
 export const webSearchTool = createTool({
   description: "web search tool",
   inputSchema: z.object({
-    user_prompt: z
-      .string()
-      .describe("prompt"),
+    user_prompt: z.string().describe("prompt"),
   }),
   execute: async ({ user_prompt }) => {
     const groqResult = await groq.chat.completions.create({
@@ -95,10 +95,23 @@ export const webSearchTool = createTool({
     return groqResult.choices[0].message.content;
   },
 });
+export const ragTool = createTool({
+  description: "provide answer based only on pdf content.",
+  inputSchema: z.object({
+    url: z.string(),
+    input: z.string(),
+  }),
+  execute: async ({ url, input }) => {
+    const result_of_store = await storeEmbeddings({ url });
+    const result_of_retrive = await retriveEmbeddings({ input });
+    return result_of_retrive;
+  },
+});
 export const tools = {
   displayWeather: weatherTool,
   createFileTool,
   createChartTool,
   imageRecognitionTool,
   webSearchTool,
+  ragTool,
 };

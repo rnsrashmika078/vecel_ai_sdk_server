@@ -21,6 +21,7 @@ import Skeleton from "./skeleton";
 import { GrResume } from "react-icons/gr";
 import { splitter } from "../libs/splitter";
 import { embeddings } from "../libs/embeddingsHF";
+import { fileFormat } from "../helpers/format";
 
 const ChatInterface = () => {
   const {
@@ -38,6 +39,7 @@ const ChatInterface = () => {
       headers: { "Content-Type": "application/json" },
     }),
   });
+  console.log("messages", messages);
   const [input, setInput] = useState("");
   const [url, setUrl] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -56,15 +58,19 @@ const ChatInterface = () => {
   };
   const fileTypes = ["png", "jpg"];
 
-  const splitterFn = async () => {
-    const res = await fetch("/api/emb/retrive", {
-      method: "POST",
-      // headers: {
-      //   "Content-type": "application/json",
-      // },
-      body: JSON.stringify({ text: input }),
-    });
-  };
+  // const splitterFn = async () => {
+  //   const res = await fetch("/api/emb/retrive", {
+  //     method: "POST",
+  //     // headers: {
+  //     //   "Content-type": "application/json",
+  //     // },
+  //     body: JSON.stringify({ text: input }),
+  //   });
+
+  //   const result = await res.json();
+
+  //   console.log(result.results.metadatas[0][0].chunk);
+  // };
 
   return (
     <div className="flex custom-scrollbar p-5 relative h-full">
@@ -112,15 +118,7 @@ const ChatInterface = () => {
                     if (part.type === "text") {
                       return (
                         <div key={index}>
-                          {parse?.url && (
-                            <img
-                              src={parse?.url ?? "./image.png"}
-                              width={150}
-                              height={150}
-                              alt="upload file"
-                              className="w-[150px] h-[150px] object-contain rounded-2xl mb-2"
-                            />
-                          )}
+                          {parse?.url && fileFormat(parse?.url)}
 
                           <ReactMarkdown
                             remarkPlugins={[remarkGfm]}
@@ -271,7 +269,26 @@ const ChatInterface = () => {
                           return null;
                       }
                     }
-
+                    if (part.type === "tool-ragTool") {
+                      switch (part.state) {
+                        case "input-available":
+                          return (
+                            <div key={index}>
+                              <Spinner text="Reading a file...!" />
+                            </div>
+                          );
+                        // case "output-available":
+                        //   return (
+                        //     <div key={index} className="w-full">
+                        //       {/* {...part.output} */}
+                        //     </div>
+                        //   );
+                        case "output-error":
+                          return <div key={index}>Error: {part.errorText}</div>;
+                        default:
+                          return null;
+                      }
+                    }
                     if (part.type === "tool-imageRecognitionTool") {
                       switch (part.state) {
                         case "input-available":
@@ -324,19 +341,19 @@ const ChatInterface = () => {
           className="sticky  -bottom-0 sm:max-w-xl w-full"
           onSubmit={(e) => {
             e.preventDefault();
-            // if (file?.url) {
-            //   const message = `{"url": "${file?.url}", "input" :"${input}"}`;
-            //   sendMessage({ text: message });
-            //   setInput("");
-            //   setFile(null);
-            //   return;
-            // }
-            // sendMessage({
-            //   text: `{"input" :"${input}"}`,
-            // });
-            // setInput("");
-            // setFile(null);
-            splitterFn();
+            if (file?.url) {
+              const message = `{"url": "${file?.url}", "input" :"${input}"}`;
+              sendMessage({ text: message });
+              setInput("");
+              setFile(null);
+              return;
+            }
+            sendMessage({
+              text: `{"input" :"${input}"}`,
+            });
+            setInput("");
+            setFile(null);
+            // splitterFn();
           }}
         >
           <InputArea input={input} setInput={setInput}>

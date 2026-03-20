@@ -1,5 +1,7 @@
+"use server";
 import { NextRequest, NextResponse } from "next/server";
 import { splitter } from "@/app/libs/splitter";
+
 import { embeddings } from "@/app/libs/embeddingsHF";
 import { chromaClient } from "@/app/libs/chromaClient";
 import { readPDF } from "@/app/helpers/file_operation";
@@ -9,9 +11,9 @@ const collection = chromaClient.getOrCreateCollection({
   name: "test",
 });
 
-export async function POST(req: NextRequest) {
+export async function storeEmbeddings({ url }: { url: string }) {
   try {
-    const { url } = await req.json();
+    if (!url) return;
 
     console.log("URL ", url);
     const data = await readPDF(url);
@@ -23,12 +25,14 @@ export async function POST(req: NextRequest) {
 
     const existing = await (
       await collection
-    ).query({
+    ).get({
       where: { hash },
-      nResults: 1,
+      limit: 1,
     });
 
-    if (existing.ids[0]?.length > 0) {
+    console.log("Existing Length ", existing.ids[0]?.length);
+    console.log("Existing Length ", existing.ids.length);
+    if (existing.ids.length == 0) {
       const chunks = await splitter.splitText(data);
       const storedIds: string[] = [];
 

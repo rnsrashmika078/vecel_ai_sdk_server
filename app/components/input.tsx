@@ -37,7 +37,7 @@ const InputArea = ({
         placeholder="Say something..."
         onChange={(e) => setInput(e.target.value)}
       />
-      <div className="absolute">{children}</div>
+      {children}
     </div>
   );
 };

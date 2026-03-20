@@ -5,6 +5,7 @@ export async function POST(req: Request) {
   try {
     const { messages }: { messages: UIMessage[] } = await req.json();
 
+
     const result = streamText({
       model: groq("openai/gpt-oss-20b"),
       // model: groq("llama-3.3-70b-versatile"),

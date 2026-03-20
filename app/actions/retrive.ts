@@ -6,13 +6,9 @@ const collection = chromaClient.getOrCreateCollection({
   name: "test",
 });
 
-export async function POST(req: NextRequest) {
+export async function retriveEmbeddings({ input }: { input: string }) {
   try {
-    const body = await req.json();
-    const { input } = body;
-
-    if (!input)
-      return NextResponse.json({ success: false, error: "No text provided" });
+    if (!input) return "no result provider";
 
     const vector = await embeddings.embedQuery(input);
 
@@ -20,14 +16,12 @@ export async function POST(req: NextRequest) {
       await collection
     ).query({
       queryEmbeddings: [vector],
-      nResults: 1,
+      nResults: 5,
     });
 
-    // console.log(results.metadatas);
-
-    return NextResponse.json({ success: true, results });
+    return results.metadatas[0][0]?.chunk;
   } catch (err) {
     console.error(err);
-    return NextResponse.json({ success: false, error: (err as Error).message });
+    return err;
   }
 }
