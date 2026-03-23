@@ -46,12 +46,12 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  --color-message: var(--message);
+  --color-textarea: var(--textarea);
+
 }
-.custom-scrollbar {
-  overflow: auto;
-  scrollbar-width: thin; /* Firefox */
-  scrollbar-color: #474747 #1e1e1e;
-}
+
 
 :root {
   --background: oklch(1 0 0);
@@ -86,6 +86,11 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  --message: oklch(85.452% 0.0001 271.152 / 0.584); /* light */
+  --textarea: oklch(100% 0.00011 271.152); /* light */
+
+
 }
 
 .dark {
@@ -103,7 +108,7 @@
   --muted-foreground: oklch(0.708 0 0);
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
+  --destructive: oklch(31.048% 0.00721 17.28);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.556 0 0);
@@ -120,6 +125,10 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+
+  --message: oklch(25.615% 0.00003 271.152); /* dark */
+  --textarea: oklch(27.274% 0.00003 271.152); /* dark */
+
 }
 
 @layer base {
@@ -132,4 +141,9 @@
   html {
     @apply font-sans;
   }
+}
+.custom-scrollbar {
+  overflow: auto;
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #474747 #1e1e1e;
 }

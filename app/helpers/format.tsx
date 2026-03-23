@@ -22,6 +22,7 @@ export function fileFormat(url: string) {
       />
     );
   }
+  return null;
 }
 //TODO :
 // change img tag with Next js Image

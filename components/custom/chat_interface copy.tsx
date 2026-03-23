@@ -11,18 +11,15 @@ import Spinner from "./spinner";
 import { Weather } from "./ai-components/weather";
 import GenFile from "./ai-components/generated_file";
 import Chart from "./ai-components/chart";
-
-import { FileType } from "../types/type";
-import { CloudinaryUpload } from "../helpers/cloudinary";
-import InputArea from "./input";
-import { BiPlus, BiSend, BiStop } from "react-icons/bi";
-import { FcDocument } from "react-icons/fc";
-import Skeleton from "./skeleton";
-import { GrResume } from "react-icons/gr";
-import { splitter } from "../libs/splitter";
-import { embeddings } from "../libs/embeddingsHF";
-import { fileFormat } from "../helpers/format";
-
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+} from "@/components/ui/input-group";
+import TextareaAutosize from "react-textarea-autosize";
+import { CloudinaryUpload } from "@/app/helpers/cloudinary";
+import { fileFormat } from "@/app/helpers/format";
+import { FileType } from "@/app/types/type";
 const ChatInterface = () => {
   const {
     messages,
@@ -39,7 +36,6 @@ const ChatInterface = () => {
       headers: { "Content-Type": "application/json" },
     }),
   });
-  console.log("messages", messages);
   const [input, setInput] = useState("");
   const [url, setUrl] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -56,25 +52,10 @@ const ChatInterface = () => {
       setLoading(false);
     }
   };
-  const fileTypes = ["png", "jpg"];
-
-  // const splitterFn = async () => {
-  //   const res = await fetch("/api/emb/retrive", {
-  //     method: "POST",
-  //     // headers: {
-  //     //   "Content-type": "application/json",
-  //     // },
-  //     body: JSON.stringify({ text: input }),
-  //   });
-
-  //   const result = await res.json();
-
-  //   console.log(result.results.metadatas[0][0].chunk);
-  // };
 
   return (
     <div className="flex custom-scrollbar p-5 relative h-full">
-      <div className="flex  px-5 flex-col sm:max-w-xl w-full mx-auto h-full flex-shrink justify-between">
+      <div className="flex  px-5 flex-col items-center sm:max-w-xl w-full mx-auto h-full flex-shrink justify-between">
         {/* <Chart  /> */}
         <div className="custom-scroll-bar py-5">
           <input
@@ -98,8 +79,8 @@ const ChatInterface = () => {
                 <div
                   className={`p-2 rounded-xl ${
                     message.role === "user"
-                      ? "justify-end items-end bg-gray-900"
-                      : " w-full justify-start"
+                      ? "justify-end items-end bg-gray-300"
+                      : " w-full justify-start "
                   }`}
                 >
                   {message.parts.map((part, index) => {
@@ -124,7 +105,7 @@ const ChatInterface = () => {
                             remarkPlugins={[remarkGfm]}
                             components={{
                               p: ({ children }) => (
-                                <p className="leading-relaxed py-1 text-white">
+                                <p className="leading-relaxed py-1 text-black">
                                   {children}
                                 </p>
                               ),
@@ -356,7 +337,8 @@ const ChatInterface = () => {
             // splitterFn();
           }}
         >
-          <InputArea input={input} setInput={setInput}>
+          {/* <InputArea input={input} setInput={setInput}>
+
             <div className="absolute top-1/2 left-5 -translate-x-1/2  -translate-y-1/2 hover:border-[#3e3e3e] p-2">
               <BiPlus size={20} onClick={() => inputRef.current?.click()} />
             </div>
@@ -365,9 +347,7 @@ const ChatInterface = () => {
                 <BiStop size={20} onClick={() => stop()} />
               )}
             </div>
-            {/* <div className="absolute top-1/2 right-15  -translate-y-1/2 hover:border-[#3e3e3e] p-2">
-              <GrResume size={20} onClick={() => regenerate()} />
-            </div> */}
+
             <div
               className={`absolute  left-2 ${
                 file?.format === "pdf" ? "-top-15" : "-top-28"
@@ -405,7 +385,45 @@ const ChatInterface = () => {
                 </div>
               </Skeleton>
             </div>
-          </InputArea>
+          </InputArea> */}
+
+          <div className="grid w-full max-w-sm gap-6">
+            <InputGroup>
+              <TextareaAutosize
+                minRows={2}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    e.currentTarget.form?.requestSubmit();
+                  }
+                }}
+                onChange={(e) => {
+                  setInput(e.currentTarget.value);
+                }}
+                maxRows={5}
+                data-slot="input-group-control"
+                className="flex field-sizing-content min-h-16 w-full resize-none rounded-md bg-transparent px-3 py-2.5 text-base transition-[color,box-shadow] outline-none md:text-sm"
+                placeholder="Autoresize textarea..."
+              />
+              <InputGroupAddon align="block-end">
+                <InputGroupButton
+                  type="submit"
+                  className=""
+                  size="sm"
+                  variant="default"
+                >
+                  Submit
+                </InputGroupButton>
+                <InputGroupButton
+                  className="ml-auto"
+                  size="sm"
+                  variant="default"
+                >
+                  Submit
+                </InputGroupButton>
+              </InputGroupAddon>
+            </InputGroup>
+          </div>
         </form>
       </div>
     </div>

@@ -15,7 +15,6 @@ export async function storeEmbeddings({ url }: { url: string }) {
   try {
     if (!url) return;
 
-    console.log("URL ", url);
     const data = await readPDF(url);
 
     if (!data)
@@ -30,8 +29,6 @@ export async function storeEmbeddings({ url }: { url: string }) {
       limit: 1,
     });
 
-    console.log("Existing Length ", existing.ids[0]?.length);
-    console.log("Existing Length ", existing.ids.length);
     if (existing.ids.length == 0) {
       const chunks = await splitter.splitText(data);
       const storedIds: string[] = [];

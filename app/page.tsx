@@ -1,7 +1,7 @@
-import ChatInterface from "./components/chat_interface";
+import { redirect } from "next/navigation";
 
-const ChatArea = () => {
-  return <ChatInterface />;
+const MainPage = () => {
+  return redirect("/dashboard");
 };
 
-export default ChatArea;
+export default MainPage;

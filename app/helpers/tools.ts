@@ -1,20 +1,27 @@
-import { promise, z } from "zod";
+import { z } from "zod";
 import { tool as createTool } from "ai";
 import { createFile } from "./file_operation";
 import { groq } from "../libs/groqClient";
 import { storeEmbeddings } from "../actions/store";
 import { retriveEmbeddings } from "../actions/retrive";
+import { requestWeatherAPI } from "./tool_helpers";
 
 //request weather info ( just for testing )
 export const weatherTool = createTool({
-  description:
-    "Display the weather for a location if user give location.otherwise return null",
+  description: "weather for user given location",
   inputSchema: z.object({
-    location: z.string().describe("The location to get the weather for"),
+    location: z.string().describe(""),
   }),
   execute: async function ({ location }) {
     await new Promise((resolve) => setTimeout(resolve, 2000));
-    return { weather: "Sunny", temperature: 75, location };
+    const result = await requestWeatherAPI(location);
+    return {
+      weather: result.condition.text,
+      temperature: result.temp_c,
+      location,
+      icon: result.condition.icon,
+      wind: result.wind_kph,
+    };
   },
 });
 
@@ -31,15 +38,16 @@ export const createFileTool = createTool({
   },
 });
 export const createChartTool = createTool({
-  description: "display chart about user given topic",
+  description: "display chart about user given topic.dont generate any image",
   inputSchema: z.object({
     data: z.array(z.any()).describe("chat data"),
+    type: z.union([z.literal("pie"), z.literal("line")]),
     xKey: z.string().describe("X axis key"),
     yKey: z.string().describe("Y axis key"),
   }),
-  execute: async ({ data, xKey, yKey }) => {
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-    return { data, xKey, yKey };
+  execute: async ({ data, type, xKey, yKey }) => {
+    // await new Promise((resolve) => setTimeout(resolve, 5000));
+    return { data, type, xKey, yKey };
   },
 });
 export const imageRecognitionTool = createTool({

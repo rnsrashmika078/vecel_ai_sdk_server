@@ -22,7 +22,7 @@ export async function POST(req: Request) {
           {
             role: "system",
             content: `${system}.chatName tool call only in initial phase of the chat.chat history: ${JSON.stringify(
-              history
+              history,
             )}`,
           },
           { role: "user", content: prompt },
@@ -58,12 +58,9 @@ export async function POST(req: Request) {
       const functionName = toolCall.function.name;
       const args = JSON.parse(toolCall.function.arguments);
 
-      console.log("Tool requested:", functionName);
-      console.log("Arguments:", args.title);
       title = args.title;
     }
-    console.log(data);
-    console.log("Title", title);
+
     return NextResponse.json({
       message: "Request Succeed!",
       success: true,
