@@ -13,16 +13,21 @@ export async function createFile(name: string, content: string) {
 }
 
 export async function readPDF(url: string) {
-  console.log("Url is here", url);
-  if (!url) {
-    return;
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch PDF: ${response.status} ${response.statusText}`,
+      );
+    }
+
+    const buffer = Buffer.from(await response.arrayBuffer());
+    const data = await pdf(buffer);
+
+    return data.text;
+  } catch (error) {
+    console.error("Error reading PDF:", error);
+    throw error;
   }
-  const pdfUrl = url;
-
-  const response = await fetch(pdfUrl);
-  const buffer = Buffer.from(await response.arrayBuffer());
-  const data = await pdf(buffer);
-
-  console.log(data.text);
-  return data.text;
 }

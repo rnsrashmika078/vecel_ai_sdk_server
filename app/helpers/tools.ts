@@ -104,7 +104,8 @@ export const webSearchTool = createTool({
   },
 });
 export const ragTool = createTool({
-  description: "provide answer based only on pdf content.",
+  description:
+    "provide answer based only on pdf content.dont use webSearch tool at all",
   inputSchema: z.object({
     url: z.string(),
     input: z.string(),

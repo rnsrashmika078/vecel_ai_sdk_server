@@ -36,11 +36,6 @@ export const ToolRenderer = ({
       if (part.state === "input-available") {
         return <Spinner text="Reading a file...!" />;
       }
-      if (part.state === "output-error") {
-        //@ts-expect-error: ts error can ignore with -D
-        return <div key={index}>Error: {part.errorText}</div>;
-      }
-      return <div>Error: {part.errorText}</div>;
     case "tool-imageRecognitionTool":
       if (part.state === "input-available") {
         return <Spinner text="Analyzing image...!" />;

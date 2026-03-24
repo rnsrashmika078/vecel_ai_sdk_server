@@ -13,3 +13,20 @@ export type RequestPayload = {
   prompt: string;
   url?: string;
 };
+
+export type GalleryItem = {
+  asset_folder: string;
+  asset_id: string;
+  bytes: number;
+  created_at: Date;
+  display_name: string;
+  format: string;
+  height: number;
+  public_id: string;
+  resource_type: string;
+  secure_url: string;
+  type: string;
+  url: string;
+  version: number;
+  width: number;
+};

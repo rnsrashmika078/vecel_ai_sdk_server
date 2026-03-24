@@ -7,9 +7,9 @@ export async function CloudinaryUpload(
   if (file != null) {
     const data = new FormData();
     data.append("file", file);
-    data.append("upload_preset", "LiveLink");
+    data.append("upload_preset", "Unimate");
     data.append("cloud_name", "dwcjokd3s");
-    data.append("folder", "LiveLink/uploads");
+    data.append("folder", "Unimate/uploads");
 
     const res = await apiFetch(
       "https://api.cloudinary.com/v1_1/dwcjokd3s/auto/upload",

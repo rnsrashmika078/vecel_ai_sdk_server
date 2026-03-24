@@ -11,10 +11,12 @@ import {
 import TextareaAutosize from "react-textarea-autosize";
 import { CloudinaryUpload } from "@/app/helpers/cloudinary";
 import { FileType } from "@/app/types/type";
-import { ArrowRight, Delete, Plus } from "lucide-react";
+import { ArrowRight, Plus } from "lucide-react";
 import ChatMessages from "./chat_messages";
 import Image from "next/image";
 import { TiDelete } from "react-icons/ti";
+import { SiFiles } from "react-icons/si";
+import { useDashboardContext } from "@/app/api/context/dashboard_context";
 
 const ChatInterface = () => {
   const {
@@ -26,6 +28,7 @@ const ChatInterface = () => {
     regenerate,
     error,
   } = useChat({
+    experimental_throttle: 50,
     transport: new DefaultChatTransport({
       api: `${process.env.NEXT_PUBLIC_API_URL!}/api/chat`,
       // api: `https://vecel-ai-sdk-server.vercel.app/api/chat`,
@@ -33,7 +36,7 @@ const ChatInterface = () => {
     }),
   });
   const [input, setInput] = useState("");
-  const [url, setUrl] = useState<string>("");
+
   const [loading, setLoading] = useState<boolean>(false);
   const [file, setFile] = useState<FileType | null>(null);
 
@@ -49,7 +52,10 @@ const ChatInterface = () => {
     }
   };
 
-  console.log("status", status);
+  const { setGalleryOpen, selectedResource, setSelectedResource } =
+    useDashboardContext();
+
+  console.log("input", input);
   return (
     <div className="flex flex-col w-full items-center justify-start">
       <div className="flex h-[550px] custom-scrollbar w-full bg-transparent">
@@ -68,18 +74,17 @@ const ChatInterface = () => {
         className="sm:w-1/2 w-full bottom-0 p-5 absolute bg-transparent"
         onSubmit={(e) => {
           e.preventDefault();
-          if (file?.url) {
-            const message = `{"url": "${file?.url}", "input" :"${input}"}`;
-            sendMessage({ text: message });
-            setInput("");
-            setFile(null);
-            return;
-          }
-          sendMessage({
-            text: `{"input" :"${input}"}`,
-          });
+          const url = file?.url ?? selectedResource?.url;
+
+          const payload = url
+            ? JSON.stringify({ url, input })
+            : JSON.stringify({ input });
+
+          sendMessage({ text: payload });
           setInput("");
+          setSelectedResource(null);
           setFile(null);
+          return;
         }}
       >
         <div className="grid w-full gap-6 rounded-md bg-textarea">
@@ -94,7 +99,7 @@ const ChatInterface = () => {
               }}
               value={input}
               onChange={(e) => {
-                setInput(e.currentTarget.value);
+                setInput(e.target.value);
               }}
               maxRows={5}
               data-slot="input-group-control"
@@ -105,18 +110,33 @@ const ChatInterface = () => {
               align="block-end"
               className="flex justify-between items-center"
             >
-              <InputGroupButton
-                size="sm"
-                onClick={() => {
-                  if (inputRef.current) {
-                    inputRef.current.click();
-                  }
-                }}
-              >
-                <Plus />
-              </InputGroupButton>
+              <div className="flex">
+                <InputGroupButton
+                  size="sm"
+                  onClick={() => {
+                    if (inputRef.current) {
+                      inputRef.current.click();
+                    }
+                  }}
+                >
+                  <Plus />
+                </InputGroupButton>
 
-              <InputGroupButton type="submit" className="ml-0" size="sm">
+                <InputGroupButton
+                  size="sm"
+                  onClick={() => {
+                    setGalleryOpen((prev) => !prev);
+                  }}
+                >
+                  <SiFiles />
+                </InputGroupButton>
+              </div>
+
+              <InputGroupButton
+                onClick={(e) => e.currentTarget.form?.requestSubmit()}
+                className="ml-0"
+                size="sm"
+              >
                 <ArrowRight />
               </InputGroupButton>
             </InputGroupAddon>
@@ -124,18 +144,31 @@ const ChatInterface = () => {
               {loading ? (
                 <div className=" relative w-[80px] h-[80px] bg-gray-600 rounded-xl animate-pulse"></div>
               ) : (
-                file && (
+                (file ?? selectedResource) && (
                   <div className="relative rounded-xl border">
-                    <Image
-                      src={file?.url}
-                      width={80}
-                      height={80}
-                      alt="uploaded image"
-                    />
+                    {(file?.format.includes("pdf") ??
+                    selectedResource?.format.includes("pdf")) ? (
+                      <Image
+                        src={"/pdf.png"}
+                        width={80}
+                        height={80}
+                        alt="uploaded image"
+                      />
+                    ) : (
+                      <Image
+                        src={file?.url ?? selectedResource?.secure_url ?? ""}
+                        width={80}
+                        height={80}
+                        alt="uploaded image"
+                      />
+                    )}
                     <TiDelete
-                      className="absolute top-0 right-0"
+                      className="absolute top-0 right-0 cursor-pointer"
                       size={25}
-                      onClick={() => setFile(null)}
+                      onClick={() => {
+                        setSelectedResource(null);
+                        setFile(null);
+                      }}
                     />
                   </div>
                 )
