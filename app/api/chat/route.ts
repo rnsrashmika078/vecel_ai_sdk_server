@@ -1,10 +1,10 @@
 import { streamText, UIMessage, convertToModelMessages, stepCountIs } from "ai";
 import { groq } from "@ai-sdk/groq";
 import { tools } from "@/app/helpers/tools";
+
 export async function POST(req: Request) {
   try {
     const { messages }: { messages: UIMessage[] } = await req.json();
-
 
     const result = streamText({
       model: groq("openai/gpt-oss-20b"),
@@ -14,9 +14,6 @@ export async function POST(req: Request) {
       messages: await convertToModelMessages(messages),
       stopWhen: stepCountIs(5),
     });
-
-    // const tokens = await result.usage;
-    // console.log("total tokens", tokens);
 
     return result.toUIMessageStreamResponse();
   } catch (err) {

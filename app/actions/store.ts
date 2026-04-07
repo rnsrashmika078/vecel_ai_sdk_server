@@ -22,12 +22,10 @@ export async function storeEmbeddings({ url }: { url: string }) {
     if (!data)
       return NextResponse.json({ success: false, error: "No text provided" });
 
-    const hash = crypto.createHash("sha256").update(data).digest("hex");
 
     const existing = await (
       await collection
     ).get({
-      where: { hash },
       limit: 1,
     });
 

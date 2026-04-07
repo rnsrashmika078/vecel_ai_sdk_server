@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import { useChat } from "@ai-sdk/react";
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { DefaultChatTransport } from "ai";
 import {
   InputGroup,
@@ -15,7 +16,7 @@ import { ArrowRight, Plus } from "lucide-react";
 import ChatMessages from "./chat_messages";
 import Image from "next/image";
 import { TiDelete } from "react-icons/ti";
-import { SiFiles } from "react-icons/si";
+import { SiFiles, SiLoop } from "react-icons/si";
 import { useDashboardContext } from "@/app/api/context/dashboard_context";
 
 const ChatInterface = () => {
@@ -28,7 +29,7 @@ const ChatInterface = () => {
     regenerate,
     error,
   } = useChat({
-    experimental_throttle: 50,
+    experimental_throttle: 20,
     transport: new DefaultChatTransport({
       api: `${process.env.NEXT_PUBLIC_API_URL!}/api/chat`,
       // api: `https://vecel-ai-sdk-server.vercel.app/api/chat`,
@@ -52,15 +53,14 @@ const ChatInterface = () => {
     }
   };
 
+  const [loop, setLoop] = useState<boolean>(false);
   const { setGalleryOpen, selectedResource, setSelectedResource } =
     useDashboardContext();
 
-  console.log("input", input);
+  const formRef = useRef<HTMLFormElement>(null);
   return (
-    <div className="flex flex-col w-full items-center justify-start">
-      <div className="flex h-[550px] custom-scrollbar w-full bg-transparent">
-        <ChatMessages status={status} messages={messages} />
-      </div>
+    <div className="flex flex-col mx-auto sm:w-1/2 h-full w-full items-center justify-between">
+      <ChatMessages status={status} messages={messages} />
       <input
         ref={inputRef}
         type="file"
@@ -71,7 +71,8 @@ const ChatInterface = () => {
         }}
       ></input>
       <form
-        className="sm:w-1/2 w-full bottom-0 p-5 absolute bg-transparent"
+        className="bottom-0 w-[300px] sm:w-full p-5 sticky bg-transparent"
+        ref={formRef}
         onSubmit={(e) => {
           e.preventDefault();
           const url = file?.url ?? selectedResource?.url;
@@ -87,7 +88,7 @@ const ChatInterface = () => {
           return;
         }}
       >
-        <div className="grid w-full gap-6 rounded-md bg-textarea">
+        <div className=" grid w-full gap-6 rounded-md bg-textarea">
           <InputGroup>
             <TextareaAutosize
               minRows={1}
@@ -106,6 +107,7 @@ const ChatInterface = () => {
               className="flex field-sizing-content min-h-2 w-full resize-none rounded-md bg-transparent px-3 py-2.5 text-base transition-[color,box-shadow] outline-none md:text-sm placeholder:text-gray-400"
               placeholder="What's on your mind..."
             />
+
             <InputGroupAddon
               align="block-end"
               className="flex justify-between items-center"
@@ -120,6 +122,16 @@ const ChatInterface = () => {
                   }}
                 >
                   <Plus />
+                </InputGroupButton>
+                <InputGroupButton
+                  size="sm"
+                  onClick={() => {
+                    setLoop((prev) => !prev);
+                  }}
+                >
+                  <SiLoop
+                    className={`transition-all ${loop ? "scale-120 " : "scale-100"}`}
+                  />
                 </InputGroupButton>
 
                 <InputGroupButton

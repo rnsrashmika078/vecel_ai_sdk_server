@@ -6,7 +6,7 @@ import { storeEmbeddings } from "../actions/store";
 import { retriveEmbeddings } from "../actions/retrive";
 import { requestWeatherAPI } from "./tool_helpers";
 
-//request weather info ( just for testing )
+// request weather info ( just for testing )
 export const weatherTool = createTool({
   description: "weather for user given location",
   inputSchema: z.object({
@@ -25,7 +25,7 @@ export const weatherTool = createTool({
   },
 });
 
-//create a file ( just for testing )
+// create a file ( just for testing )
 export const createFileTool = createTool({
   description: "create a file",
   inputSchema: z.object({
@@ -116,8 +116,9 @@ export const ragTool = createTool({
     return result_of_retrive;
   },
 });
+
 export const tools = {
-  displayWeather: weatherTool,
+  weatherTool,
   createFileTool,
   createChartTool,
   imageRecognitionTool,

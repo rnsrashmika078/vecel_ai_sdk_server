@@ -12,6 +12,7 @@ export const ToolRenderer = ({
   status: ChatStatus;
   part: UIMessagePart<UIDataTypes, UITools>;
 }) => {
+  console.log(part)
   switch (part.type) {
     case "tool-displayWeather":
       if (part.state === "input-available") {
@@ -48,6 +49,15 @@ export const ToolRenderer = ({
     case "tool-webSearchTool":
       if (part.state === "input-available") {
         return <Spinner text="Searching internet!" />;
+      }
+      if (part.state === "output-available") {
+         //@ts-expect-error: ts error can ignore with -D
+        return <p>{...part.output} </p>;
+      }
+      return <div>Error: {part.errorText}</div>;
+    case "tool-arduinoTool":
+      if (part.state === "input-available") {
+        return <Spinner text="Checking Status of the ESP 32!" />;
       }
       if (part.state === "output-available") {
         return null;

@@ -14,7 +14,7 @@ const ChatMessages = ({
   messages: UIMessage<unknown, UIDataTypes, UITools>[];
 }) => {
   return (
-    <div className="w-full m-auto ">
+    <>
       {messages.map((message) => (
         <div
           key={message.id}
@@ -38,7 +38,7 @@ const ChatMessages = ({
                     {parse?.url && fileFormat(parse?.url)}
 
                     <ReactMarkdown
-                      remarkPlugins={[remarkGfm]}
+                      // remarkPlugins={[remarkGfm]}
                       components={{
                         p: ({ children }) => (
                           <p className="leading-relaxed">{children}</p>
@@ -131,7 +131,7 @@ const ChatMessages = ({
                               {children}
                             </SyntaxHighlighter>
                           ) : (
-                            <code className="bg-gray-800 px-1.5 py-0.5 rounded text-red-400 text-sm">
+                            <code className="bg-gray-800 rounded custom-scrollbar text-red-400 text-sm">
                               {children}
                             </code>
                           );
@@ -148,7 +148,7 @@ const ChatMessages = ({
           </div>
         </div>
       ))}
-    </div>
+    </>
   );
 };
 

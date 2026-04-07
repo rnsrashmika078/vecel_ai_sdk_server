@@ -28,6 +28,7 @@ const Gallery = () => {
       method: "GET",
     });
     const result = await res.json();
+    
     setStore(result.resources);
     console.log("resource", result.resources);
     setLoading(false);

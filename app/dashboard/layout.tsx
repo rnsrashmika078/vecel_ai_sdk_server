@@ -16,9 +16,9 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
             </main>
           </SidebarProvider>
         </div>
-        <div className="relative w-full flex flex-col">
-          <div className="p-5 bg-blue-500">TOP</div>
-          <div className="flex w-full">{children}</div>
+        <div className="relative w-full flex flex-col  overflow-x-hidden">
+          <div className="p-0 sticky top-0">TOP</div>
+          <div className="flex w-full h-full ">{children}</div>
         </div>
       </DashboardWrapperContext>
     </div>
