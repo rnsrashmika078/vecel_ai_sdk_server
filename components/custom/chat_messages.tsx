@@ -6,6 +6,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import * as prismaStyles from "react-syntax-highlighter/dist/esm/styles/prism";
 import { inputParser } from "@/app/helpers/parser";
 import { ToolRenderer } from "./tool_renderer";
+import { memo } from "react";
 const ChatMessages = ({
   messages,
   status,
@@ -38,7 +39,7 @@ const ChatMessages = ({
                     {parse?.url && fileFormat(parse?.url)}
 
                     <ReactMarkdown
-                      // remarkPlugins={[remarkGfm]}
+                      remarkPlugins={[remarkGfm]}
                       components={{
                         p: ({ children }) => (
                           <p className="leading-relaxed">{children}</p>
@@ -57,18 +58,22 @@ const ChatMessages = ({
                             {children}
                           </h3>
                         ),
-
+                        h4: ({ children }) => (
+                          <h4 className="text-lg font-semibold mt-2">
+                            {children}
+                          </h4>
+                        ),
+                        
                         strong: ({ children }) => (
                           <strong className="font-bold ">{children}</strong>
                         ),
-
                         // em: ({ children }) => (
                         //   <div className="border-l-4 rounded-md px-2 mt-2 bg-textarea">
                         //     <em className="italic text-blue-500">{children}</em>
                         //   </div>
                         // ),
                         table: ({ children }) => (
-                          <table className=" mt-3">{children}</table>
+                          <table className=" mt-2">{children}</table>
                         ),
                         th: ({ children }) => (
                           <th className="border px-0 md:p-3 mt-3">
@@ -150,6 +155,7 @@ const ChatMessages = ({
       ))}
     </>
   );
-};
+}
+// ChatMessages.displayName = "ChatMessages"
 
 export default ChatMessages;

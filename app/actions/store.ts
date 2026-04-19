@@ -16,8 +16,6 @@ export async function storeEmbeddings({ url }: { url: string }) {
     if (!url) return;
 
     const data = await readPDF(url);
-    console.log("uniform resource linked ", url);
-    console.log("data ", data);
 
     if (!data)
       return NextResponse.json({ success: false, error: "No text provided" });

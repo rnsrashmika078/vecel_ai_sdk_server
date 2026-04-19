@@ -28,7 +28,7 @@ const Gallery = () => {
       method: "GET",
     });
     const result = await res.json();
-    
+
     setStore(result.resources);
     console.log("resource", result.resources);
     setLoading(false);
@@ -58,6 +58,11 @@ const Gallery = () => {
     document.addEventListener("mousedown", handleClickFocus);
 
     return () => document.removeEventListener("mousedown", handleClickFocus);
+  }, []);
+
+  useEffect(() => {
+    const resetSelection = () => setSelection("Images");
+    resetSelection();
   }, []);
   return (
     <AnimatePresence>
@@ -145,10 +150,13 @@ export function ComboboxBasic({
 }: {
   setSelection: React.Dispatch<React.SetStateAction<string>>;
 }) {
+  const { selectedResource } = useDashboardContext();
   return (
     <div className="sticky top-0 rounded-xl">
       <Combobox items={frameworks}>
-        <ComboboxInput placeholder="Image" />
+        <ComboboxInput
+          placeholder={selectedResource?.display_name ?? "Images"}
+        />
         <ComboboxContent className="">
           <ComboboxEmpty>No items found.</ComboboxEmpty>
           <ComboboxList>

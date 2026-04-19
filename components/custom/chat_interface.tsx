@@ -19,6 +19,10 @@ import { TiDelete } from "react-icons/ti";
 import { SiFiles, SiLoop } from "react-icons/si";
 import { useDashboardContext } from "@/app/api/context/dashboard_context";
 
+type OnFinishType = {
+  usage: any;
+  response: any;
+};
 const ChatInterface = () => {
   const {
     messages,
@@ -29,7 +33,10 @@ const ChatInterface = () => {
     regenerate,
     error,
   } = useChat({
-    experimental_throttle: 20,
+    experimental_throttle: 1000,
+    onFinish: (e) => {
+      console.log(`result on finish ${JSON.stringify(e)}`);
+    },
     transport: new DefaultChatTransport({
       api: `${process.env.NEXT_PUBLIC_API_URL!}/api/chat`,
       // api: `https://vecel-ai-sdk-server.vercel.app/api/chat`,
@@ -60,7 +67,9 @@ const ChatInterface = () => {
   const formRef = useRef<HTMLFormElement>(null);
   return (
     <div className="flex flex-col mx-auto sm:w-1/2 h-full w-full items-center justify-between">
-      <ChatMessages status={status} messages={messages} />
+      <div className="w-full">
+        <ChatMessages status={status} messages={messages} />
+      </div>
       <input
         ref={inputRef}
         type="file"
@@ -71,7 +80,7 @@ const ChatInterface = () => {
         }}
       ></input>
       <form
-        className="bottom-0 w-[300px] sm:w-full p-5 sticky bg-transparent"
+        className="w-full sm:w-full p-5 sticky bottom-0 "
         ref={formRef}
         onSubmit={(e) => {
           e.preventDefault();
@@ -88,7 +97,7 @@ const ChatInterface = () => {
           return;
         }}
       >
-        <div className=" grid w-full gap-6 rounded-md bg-textarea">
+        <div className="grid w-full gap-6 rounded-md bg-textarea">
           <InputGroup>
             <TextareaAutosize
               minRows={1}
@@ -112,7 +121,7 @@ const ChatInterface = () => {
               align="block-end"
               className="flex justify-between items-center"
             >
-              <div className="flex">
+              <div className="flex w-full">
                 <InputGroupButton
                   size="sm"
                   onClick={() => {

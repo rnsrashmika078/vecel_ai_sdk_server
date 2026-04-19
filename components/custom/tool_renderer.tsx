@@ -12,7 +12,7 @@ export const ToolRenderer = ({
   status: ChatStatus;
   part: UIMessagePart<UIDataTypes, UITools>;
 }) => {
-  console.log(part)
+  console.log(`part , ${JSON.stringify(part)}`);
   switch (part.type) {
     case "tool-displayWeather":
       if (part.state === "input-available") {
@@ -51,7 +51,7 @@ export const ToolRenderer = ({
         return <Spinner text="Searching internet!" />;
       }
       if (part.state === "output-available") {
-         //@ts-expect-error: ts error can ignore with -D
+        //@ts-expect-error: ts error can ignore with -D
         return <p>{...part.output} </p>;
       }
       return <div>Error: {part.errorText}</div>;

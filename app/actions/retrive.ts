@@ -1,4 +1,3 @@
-import { NextRequest, NextResponse } from "next/server";
 import { chromaClient } from "@/app/libs/chromaClient";
 import { embeddings } from "@/app/libs/embeddingsHF";
 
@@ -21,7 +20,7 @@ export async function retriveEmbeddings({ input }: { input: string }) {
 
     return results.metadatas[0][0]?.chunk;
   } catch (err) {
-    console.error(err);
+    // console.error(err);
     return err;
   }
 }

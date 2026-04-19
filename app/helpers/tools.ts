@@ -46,7 +46,7 @@ export const createChartTool = createTool({
     yKey: z.string().describe("Y axis key"),
   }),
   execute: async ({ data, type, xKey, yKey }) => {
-    // await new Promise((resolve) => setTimeout(resolve, 5000));
+    await new Promise((resolve) => setTimeout(resolve, 5000));
     return { data, type, xKey, yKey };
   },
 });
@@ -59,7 +59,7 @@ export const imageRecognitionTool = createTool({
     const groqResult = await groq.chat.completions.create({
       model: "meta-llama/llama-4-scout-17b-16e-instruct",
       stream: false,
-      max_completion_tokens: 500,
+      max_completion_tokens: 50,
       messages: [
         {
           role: "user",
@@ -89,7 +89,7 @@ export const webSearchTool = createTool({
       ],
       model: "groq/compound-mini",
       temperature: 1,
-      max_completion_tokens: 200,
+      max_completion_tokens: 50,
       top_p: 1,
       stream: false,
       stop: null,
@@ -100,7 +100,7 @@ export const webSearchTool = createTool({
       },
     });
 
-    return groqResult.choices[0].message.content;
+    return `Web search result: ${groqResult.choices[0].message.content}`;
   },
 });
 export const ragTool = createTool({
