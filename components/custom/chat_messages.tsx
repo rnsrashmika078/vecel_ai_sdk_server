@@ -7,16 +7,20 @@ import * as prismaStyles from "react-syntax-highlighter/dist/esm/styles/prism";
 import { inputParser } from "@/app/helpers/parser";
 import { ToolRenderer } from "./tool_renderer";
 import { memo } from "react";
-const ChatMessages = ({
+import Spinner from "./spinner";
+import DotLoader from "./dot_loader";
+const ChatMessages = memo(({
   messages,
   status,
 }: {
   status: ChatStatus;
+
   messages: UIMessage<unknown, UIDataTypes, UITools>[];
 }) => {
+  const currentMessage =messages.at(-1)?.id
   return (
     <>
-      {messages.map((message) => (
+      {messages.map((message,) => (
         <div
           key={message.id}
           className={`p-2 flex w-full  ${
@@ -30,14 +34,16 @@ const ChatMessages = ({
                 : "w-full justify-start "
             }`}
           >
+          
             {message.parts.map((part, index) => {
               const parse = inputParser(part, message);
-
               if (part.type === "text") {
                 return (
                   <div key={index}>
                     {parse?.url && fileFormat(parse?.url)}
-
+                    {message.role === "assistant" && currentMessage===message.id && (status === "submitted" || status === "streaming") &&
+                      <DotLoader/>
+                    }
                     <ReactMarkdown
                       remarkPlugins={[remarkGfm]}
                       components={{
@@ -148,14 +154,17 @@ const ChatMessages = ({
                   </div>
                 );
               }
-              return <ToolRenderer part={part} status={status} key={index} />;
+              else if(part.type.startsWith("tool")){
+                return <ToolRenderer part={part} status={status} key={index} />;
+              }
+                
             })}
           </div>
         </div>
       ))}
     </>
   );
-}
-// ChatMessages.displayName = "ChatMessages"
+})
+ChatMessages.displayName = "ChatMessages"
 
 export default ChatMessages;

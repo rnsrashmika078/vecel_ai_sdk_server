@@ -19,11 +19,16 @@ import { TiDelete } from "react-icons/ti";
 import { SiFiles, SiLoop } from "react-icons/si";
 import { useDashboardContext } from "@/app/api/context/dashboard_context";
 
-type OnFinishType = {
-  usage: any;
-  response: any;
-};
 const ChatInterface = () => {
+  const [currentId, setCurrentId] = useState<string | undefined>();
+  const [input, setInput] = useState("");
+
+  const [loading, setLoading] = useState<boolean>(false);
+  const [file, setFile] = useState<FileType | null>(null);
+
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const { setGalleryOpen, selectedResource, setSelectedResource } =
+    useDashboardContext();
   const {
     messages,
     sendMessage,
@@ -33,22 +38,15 @@ const ChatInterface = () => {
     regenerate,
     error,
   } = useChat({
-    experimental_throttle: 1000,
-    onFinish: (e) => {
-      console.log(`result on finish ${JSON.stringify(e)}`);
-    },
     transport: new DefaultChatTransport({
       api: `${process.env.NEXT_PUBLIC_API_URL!}/api/chat`,
       // api: `https://vecel-ai-sdk-server.vercel.app/api/chat`,
       headers: { "Content-Type": "application/json" },
     }),
   });
-  const [input, setInput] = useState("");
 
-  const [loading, setLoading] = useState<boolean>(false);
-  const [file, setFile] = useState<FileType | null>(null);
+  
 
-  const inputRef = useRef<HTMLInputElement | null>(null);
   const handleFileupload = async (e: ChangeEvent<HTMLInputElement>) => {
     const file: File | undefined = e.target.files?.[0];
     if (file) {
@@ -60,15 +58,14 @@ const ChatInterface = () => {
     }
   };
 
-  const [loop, setLoop] = useState<boolean>(false);
-  const { setGalleryOpen, selectedResource, setSelectedResource } =
-    useDashboardContext();
-
   const formRef = useRef<HTMLFormElement>(null);
   return (
     <div className="flex flex-col mx-auto sm:w-1/2 h-full w-full items-center justify-between">
       <div className="w-full">
-        <ChatMessages status={status} messages={messages} />
+        <ChatMessages
+          status={status}
+          messages={messages}
+        />
       </div>
       <input
         ref={inputRef}
@@ -131,16 +128,6 @@ const ChatInterface = () => {
                   }}
                 >
                   <Plus />
-                </InputGroupButton>
-                <InputGroupButton
-                  size="sm"
-                  onClick={() => {
-                    setLoop((prev) => !prev);
-                  }}
-                >
-                  <SiLoop
-                    className={`transition-all ${loop ? "scale-120 " : "scale-100"}`}
-                  />
                 </InputGroupButton>
 
                 <InputGroupButton

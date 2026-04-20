@@ -6,7 +6,6 @@ import { storeEmbeddings } from "../actions/store";
 import { retriveEmbeddings } from "../actions/retrive";
 import { requestWeatherAPI } from "./tool_helpers";
 
-// request weather info ( just for testing )
 export const weatherTool = createTool({
   description: "weather for user given location",
   inputSchema: z.object({

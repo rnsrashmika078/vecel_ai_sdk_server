@@ -12,7 +12,6 @@ export const ToolRenderer = ({
   status: ChatStatus;
   part: UIMessagePart<UIDataTypes, UITools>;
 }) => {
-  console.log(`part , ${JSON.stringify(part)}`);
   switch (part.type) {
     case "tool-displayWeather":
       if (part.state === "input-available") {
@@ -41,20 +40,10 @@ export const ToolRenderer = ({
       if (part.state === "input-available") {
         return <Spinner text="Analyzing image...!" />;
       }
-    // if (part.state === "output-error") {
-    //   //@ts-expect-error: ts error can ignore with -D
-    //   return <div key={index}>Error: {part.errorText}</div>;
-    // }
-    // return <div>Error: {part.errorText}</div>;
     case "tool-webSearchTool":
       if (part.state === "input-available") {
         return <Spinner text="Searching internet!" />;
       }
-      if (part.state === "output-available") {
-        //@ts-expect-error: ts error can ignore with -D
-        return <p>{...part.output} </p>;
-      }
-      return <div>Error: {part.errorText}</div>;
     case "tool-arduinoTool":
       if (part.state === "input-available") {
         return <Spinner text="Checking Status of the ESP 32!" />;
@@ -69,13 +58,6 @@ export const ToolRenderer = ({
         return <Spinner text="Generating Charts data...!" />;
       }
       if (part.state === "output-available") {
-        // return (
-        //   status === "ready" && (
-        //     //@ts-expect-error: ts error can ignore with -D
-        //     <Chart data={part.output} />
-        //   )
-        // );
-
         if (status === "ready") {
           //@ts-expect-error: ts error can ignore with -D
           return <Chart data={part.output} />;
