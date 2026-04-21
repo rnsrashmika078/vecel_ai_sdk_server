@@ -102,19 +102,19 @@ export const webSearchTool = createTool({
     return `Web search result: ${groqResult.choices[0].message.content}`;
   },
 });
-export const ragTool = createTool({
-  description:
-    "provide answer based only on pdf content.dont use webSearch tool at all",
-  inputSchema: z.object({
-    url: z.string(),
-    input: z.string(),
-  }),
-  execute: async ({ url, input }) => {
-    const result_of_store = await storeEmbeddings({ url });
-    const result_of_retrive = await retriveEmbeddings({ input });
-    return result_of_retrive;
-  },
-});
+// export const ragTool = createTool({
+//   description:
+//     "provide answer based only on pdf content.dont use webSearch tool at all",
+//   inputSchema: z.object({
+//     url: z.string(),
+//     input: z.string(),
+//   }),
+//   execute: async ({ url, input }) => {
+//     const result_of_store = await storeEmbeddings({ url });
+//     const result_of_retrive = await retriveEmbeddings({ input });
+//     return result_of_retrive;
+//   },
+// });
 
 export const tools = {
   weatherTool,
@@ -122,5 +122,5 @@ export const tools = {
   createChartTool,
   imageRecognitionTool,
   webSearchTool,
-  ragTool,
+  // ragTool,
 };

@@ -1,3 +1,6 @@
+import { UIMessage } from "ai";
+import z from "zod";
+
 export type ChatAreaType = {
   id: string;
   role: "user" | "assistant";
@@ -30,3 +33,12 @@ export type GalleryItem = {
   version: number;
   width: number;
 };
+
+export type MessageMetadataT = {
+  totalTokens?: string;
+  remainTokens?: string;
+  remainRequests?: string;
+  status: string;
+  reasoning?: string;
+};
+export type MyUIMessage = UIMessage<MessageMetadataT>;

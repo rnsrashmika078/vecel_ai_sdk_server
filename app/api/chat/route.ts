@@ -5,32 +5,61 @@ import { tools } from "@/app/helpers/tools";
 
 export async function POST(req: Request) {
   try {
-    const { messages }: { messages: UIMessage[] } = await req.json();
-    // let meta: any = null;
+    const { messages, test }: { messages: UIMessage[]; test: string } =
+      await req.json();
+
+    console.log(`custom values ${test}`);
     const result = streamText({
       model: groq("openai/gpt-oss-20b"),
       // model: groq("llama-3.3-70b-versatile"),
       system: `You are a helpful assistant. use tool if user ask only`,
       tools,
+      providerOptions: {
+        groq: {
+          reasoningFormat: "parsed",
+          reasoningEffort: "high",
+        },
+      },
       // timeout: 60000,
       // temperature: 0,
       // toolChoice: "auto",
       messages: await convertToModelMessages(messages),
       stopWhen: stepCountIs(2),
-    /* The `onFinish` function in the provided code snippet is a callback function that is executed after the `streamText` function completes its processing. It receives an object `e` as a parameter, which likely contains information about the completion of the text streaming process. */
-      // onFinish: (e) => {
-      //   meta = {
-      //     usage: e.totalUsage,
-      //     remainingTokens:
-      //       e.response?.headers?.["x-ratelimit-remaining-tokens"],
-      //     remainingRequests:
-      //       e.response?.headers?.["x-ratelimit-remaining-requests"],
-      //   };
-      //   console.log("META:", meta);
-      // },
     });
 
-    return result.toUIMessageStreamResponse();
+    return result.toUIMessageStreamResponse({
+      messageMetadata: ({ part }) => {
+        if (part.type === "start") {
+          return {
+            status: "Starting..",
+          };
+        }
+        if (part.type === "reasoning-delta") {
+          return {
+            status: "Thinking...",
+            reasoning: part.text,
+          };
+        }
+        // if (part.type === "start-step") {
+        //   return {
+        //     status: "Going on..",
+        //     reasoning: reasoning,
+        //   };
+        // }
+        // if (part.type === "tool-call") {
+        //   return {
+        //     status: `Calling ${part.toolName}`,
+        //     reasoning: reasoning,
+        //   };
+        // }
+        if (part.type === "finish") {
+          return {
+            status: "",
+            totalTokens: part.totalUsage.totalTokens,
+          };
+        }
+      },
+    });
   } catch (err) {
     console.log(err);
   }

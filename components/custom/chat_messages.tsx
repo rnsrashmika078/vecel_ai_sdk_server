@@ -7,7 +7,7 @@ import * as prismaStyles from "react-syntax-highlighter/dist/esm/styles/prism";
 import { inputParser } from "@/app/helpers/parser";
 import { ToolRenderer } from "./tool_renderer";
 import { memo } from "react";
-import Spinner from "./spinner";
+
 import DotLoader from "./dot_loader";
 const ChatMessages = memo(({
   messages,
