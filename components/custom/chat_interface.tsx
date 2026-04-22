@@ -135,6 +135,7 @@ const ChatInterface = () => {
                   size="sm"
                   onClick={() => {
                     setGalleryOpen((prev) => !prev);
+                    window.location.hash = "gallery";
                   }}
                 >
                   <SiFiles />

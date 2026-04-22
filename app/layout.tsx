@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Theame from "@/components/custom/theame";
+import SyncTheme from "@/components/custom/sync_theme";
 // import WBInitializer from "@/components/custom/arduino/websocket_initializer";
 
 const geistSans = Geist({
@@ -29,8 +29,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased h-screen overflow-hidden`}
       >
-        <Theame />
-
+        <SyncTheme />
         {children}
       </body>
     </html>

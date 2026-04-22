@@ -17,7 +17,15 @@ import Spinner from "./spinner";
 const Gallery = () => {
   const { galleryOpen, setGalleryOpen, selectedResource, setSelectedResource } =
     useDashboardContext();
+  useEffect(() => {
+    const hashing = () => {
+      setGalleryOpen(window.location.hash === "#gallery");
+    };
+    hashing();
+    window.addEventListener("hashchange", hashing);
 
+    return () => window.removeEventListener("hashchange", hashing);
+  }, []);
   const [store, setStore] = useState<GalleryItem[]>([]);
   const [selection, setSelection] = useState<string>("Images");
   const [loading, setLoading] = useState<boolean>(false);
@@ -53,6 +61,7 @@ const Gallery = () => {
     const handleClickFocus = (e: MouseEvent) => {
       if (clickRef.current && !clickRef.current.contains(e.target as Node)) {
         setGalleryOpen(false);
+        window.history.pushState(null, document.title, window.location.pathname);
       }
     };
     document.addEventListener("mousedown", handleClickFocus);

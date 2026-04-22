@@ -6,6 +6,8 @@ import { multipleOf } from "zod";
 export type DashboardContextType = {
   galleryOpen: boolean;
   setGalleryOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  settingOpen: boolean;
+  setSettingOpen: React.Dispatch<React.SetStateAction<boolean>>;
 
   selectedResource: GalleryItem | null;
   setSelectedResource: React.Dispatch<React.SetStateAction<GalleryItem | null>>;
@@ -18,13 +20,21 @@ export const DashboardWrapperContext = ({
   children: React.ReactNode;
 }) => {
   const [galleryOpen, setGalleryOpen] = useState(false);
+  const [settingOpen, setSettingOpen] = useState(false);
   const [selectedResource, setSelectedResource] = useState<GalleryItem | null>(
     null,
   );
 
   return (
     <DashboardContext.Provider
-      value={{ galleryOpen, setGalleryOpen, selectedResource, setSelectedResource }}
+      value={{
+        galleryOpen,
+        setGalleryOpen,
+        selectedResource,
+        setSelectedResource,
+        settingOpen,
+        setSettingOpen,
+      }}
     >
       {children}
     </DashboardContext.Provider>
