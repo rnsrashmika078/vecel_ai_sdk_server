@@ -40,5 +40,8 @@ export type MessageMetadataT = {
   remainRequests?: string;
   status: string;
   reasoning?: string;
+  start?: number;
+  end?: number;
+  reasoning_status?: string;
 };
 export type MyUIMessage = UIMessage<MessageMetadataT>;

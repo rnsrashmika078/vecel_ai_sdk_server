@@ -2,6 +2,7 @@
 import { streamText, UIMessage, convertToModelMessages, stepCountIs } from "ai";
 import { groq } from "@ai-sdk/groq";
 import { tools } from "@/app/helpers/tools";
+import { deltaTime } from "@/app/helpers/format";
 
 export async function POST(req: Request) {
   try {
@@ -17,7 +18,7 @@ export async function POST(req: Request) {
       providerOptions: {
         groq: {
           reasoningFormat: "parsed",
-          reasoningEffort: "high",
+          reasoningEffort: "medium",
         },
       },
       // timeout: 60000,
@@ -27,30 +28,58 @@ export async function POST(req: Request) {
       stopWhen: stepCountIs(2),
     });
 
+    let reasoningStart: number | null = null;
     return result.toUIMessageStreamResponse({
       messageMetadata: ({ part }) => {
         if (part.type === "start") {
           return {
-            status: "Starting..",
+            status: "Requesting...",
+          };
+        }
+        if (part.type === "reasoning-start") {
+          reasoningStart = Date.now();
+
+          return {
+            status: "Thinking...",
+            start: new Date().getTime(),
+            reasoning_status: "reasoning...",
           };
         }
         if (part.type === "reasoning-delta") {
           return {
-            status: "Thinking...",
+            status: "Still thinking...",
             reasoning: part.text,
+            reasoning_status: "reasoning...",
           };
         }
-        // if (part.type === "start-step") {
-        //   return {
-        //     status: "Going on..",
-        //     reasoning: reasoning,
-        //   };
-        // }
+        if (part.type === "reasoning-end") {
+          const end = Date.now();
+          return {
+            reasoning_status: `Thought for ${deltaTime(reasoningStart!, end)} seconds`,
+          };
+        }
+        if (part.type === "start-step") {
+          return {
+            status: "Working on it...",
+          };
+        }
         // if (part.type === "tool-call") {
-        //   return {
-        //     status: `Calling ${part.toolName}`,
-        //     reasoning: reasoning,
-        //   };
+        //   if (part.toolName.startsWith("tool-imageRecognitionTool"))
+        //     return {
+        //       status: `Analyzing image...!`,
+        //     };
+        //   if (part.toolName.startsWith("tool-createChartTool"))
+        //     return {
+        //       status: `Generating Chart UI`,
+        //     };
+        //   if (part.toolName.startsWith("tool-displayWeather"))
+        //     return {
+        //       status: `Requesting Weather API...!`,
+        //     };
+        //   if (part.toolName.startsWith("tool-webSearchTool"))
+        //     return {
+        //       status: `Searching internet...!`,
+        //     };
         // }
         if (part.type === "finish") {
           return {

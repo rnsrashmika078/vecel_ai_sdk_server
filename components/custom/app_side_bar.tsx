@@ -8,22 +8,60 @@ import {
   SidebarGroupLabel,
   SidebarHeader,
 } from "@/components/ui/sidebar";
-import { Plus } from "lucide-react";
+import { Folder, Home, MessageSquare, Plus, Settings } from "lucide-react";
 
 export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader />
+
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Application</SidebarGroupLabel>
+
           <SidebarGroupAction>
-            <Plus /> <span className="sr-only">Add Project</span>
+            <Plus />
+            <span className="sr-only">Add Project</span>
           </SidebarGroupAction>
-          <SidebarGroupContent></SidebarGroupContent>
+
+          <SidebarGroupContent className="flex flex-col gap-1">
+            <button className="flex items-center gap-2 p-2 rounded-md hover:bg-accent">
+              <Home size={16} />
+              <span>Dashboard</span>
+            </button>
+
+            <button className="flex items-center gap-2 p-2 rounded-md hover:bg-accent">
+              <MessageSquare size={16} />
+              <span>Chats</span>
+            </button>
+
+            <button className="flex items-center gap-2 p-2 rounded-md hover:bg-accent">
+              <Folder size={16} />
+              <span>Projects</span>
+            </button>
+
+            <button className="flex items-center gap-2 p-2 rounded-md hover:bg-accent">
+              <Settings size={16} />
+              <span>Settings</span>
+            </button>
+          </SidebarGroupContent>
         </SidebarGroup>
-        <SidebarGroup />
+
+        <SidebarGroup>
+          <SidebarGroupLabel>Recent</SidebarGroupLabel>
+
+          <SidebarGroupContent className="flex flex-col gap-1">
+            <button className="p-2 rounded-md hover:bg-accent text-sm text-muted-foreground">
+              AI Chat App
+            </button>
+
+            <button className="p-2 rounded-md hover:bg-accent text-sm text-muted-foreground">
+              Dashboard UI
+            </button>
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
+
       <SidebarFooter />
     </Sidebar>
   );

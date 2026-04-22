@@ -11,13 +11,14 @@ import {
 } from "@/components/ui/input-group";
 import TextareaAutosize from "react-textarea-autosize";
 import { CloudinaryUpload } from "@/app/helpers/cloudinary";
-import { FileType } from "@/app/types/type";
+import { FileType, MyUIMessage } from "@/app/types/type";
 import { ArrowRight, Plus } from "lucide-react";
 import ChatMessages from "./chat_messages";
 import Image from "next/image";
 import { TiDelete } from "react-icons/ti";
 import { SiFiles, SiLoop } from "react-icons/si";
 import { useDashboardContext } from "@/app/api/context/dashboard_context";
+import { FaStop } from "react-icons/fa";
 
 const ChatInterface = () => {
   const [currentId, setCurrentId] = useState<string | undefined>();
@@ -37,15 +38,16 @@ const ChatInterface = () => {
     resumeStream,
     regenerate,
     error,
-  } = useChat({
+    id,
+  } = useChat<MyUIMessage>({
+    experimental_throttle: 50,
     transport: new DefaultChatTransport({
-      api: `${process.env.NEXT_PUBLIC_API_URL!}/api/chat`,
-      // api: `https://vecel-ai-sdk-server.vercel.app/api/chat`,
-      headers: { "Content-Type": "application/json" },
+      api: `/api/chat`,
     }),
+    onData: (data) => {
+      console.log("Received data part from server:", data);
+    },
   });
-
-  
 
   const handleFileupload = async (e: ChangeEvent<HTMLInputElement>) => {
     const file: File | undefined = e.target.files?.[0];
@@ -63,8 +65,9 @@ const ChatInterface = () => {
     <div className="flex flex-col mx-auto sm:w-1/2 h-full w-full items-center justify-between">
       <div className="w-full">
         <ChatMessages
-          status={status}
           messages={messages}
+          regenerate={regenerate}
+          status={status}
         />
       </div>
       <input
@@ -78,19 +81,17 @@ const ChatInterface = () => {
       ></input>
       <form
         className="w-full sm:w-full p-5 sticky bottom-0 "
-        ref={formRef}
         onSubmit={(e) => {
           e.preventDefault();
-          const url = file?.url ?? selectedResource?.url;
-
-          const payload = url
-            ? JSON.stringify({ url, input })
-            : JSON.stringify({ input });
-
-          sendMessage({ text: payload });
+          sendMessage(
+            { text: input },
+            {
+              body: {
+                test: "test_01",
+              },
+            },
+          );
           setInput("");
-          setSelectedResource(null);
-          setFile(null);
           return;
         }}
       >
@@ -140,13 +141,24 @@ const ChatInterface = () => {
                 </InputGroupButton>
               </div>
 
-              <InputGroupButton
-                onClick={(e) => e.currentTarget.form?.requestSubmit()}
-                className="ml-0"
-                size="sm"
-              >
-                <ArrowRight />
-              </InputGroupButton>
+              {status === "submitted" || status === "streaming" ? (
+                <InputGroupButton
+                  onClick={() => stop()}
+                  className="ml-0 disabled:bg-gray-100 border border-gray-200 bg-white text-black"
+                  size="sm"
+                >
+                  <FaStop />
+                </InputGroupButton>
+              ) : (
+                <InputGroupButton
+                  disabled={status !== "ready"}
+                  onClick={(e) => e.currentTarget.form?.requestSubmit()}
+                  className="ml-0 disabled:bg-gray-100 border border-gray-200 bg-white text-black"
+                  size="sm"
+                >
+                  <ArrowRight />
+                </InputGroupButton>
+              )}
             </InputGroupAddon>
             <InputGroupAddon align="block-start" className="flex">
               {loading ? (

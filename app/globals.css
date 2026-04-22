@@ -85,8 +85,8 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-
-  --message: oklch(85.452% 0.0001 271.152 / 0.584); /* light */
+  --btn: oklch(82.656% 0.00009 271.152 / 0.584); /* light */
+  --message: oklch(82.656% 0.00009 271.152 / 0.584); /* light */
   --textarea: oklch(100% 0.00011 271.152); /* light */
 
 
@@ -124,8 +124,8 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
-
-  --message: oklch(25.615% 0.00003 271.152); /* dark */
+  --btn: oklch(13.441% 0.00002 271.152); /* dark */
+  --message: oklch(13.441% 0.00002 271.152); /* dark */
   --textarea: oklch(27.274% 0.00003 271.152); /* dark */
 
 }
@@ -140,6 +140,19 @@
   html {
     @apply font-sans;
   }
+
+}
+.btn-icon {
+  background-color: transparent;
+  color: var(--color-foreground);
+  padding: 6px;
+  border-radius: var(--radius-md);
+  transition: all 0.2s ease;
+}
+
+.btn-icon:hover {
+  background-color: var(--btn);
+  color: var(--color-accent-foreground);
 }
 .custom-scrollbar {
   overflow: auto;

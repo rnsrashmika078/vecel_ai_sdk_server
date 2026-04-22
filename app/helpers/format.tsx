@@ -26,3 +26,7 @@ export function fileFormat(url: string) {
 }
 //TODO :
 // change img tag with Next js Image
+
+export function deltaTime(start: number, end: number) {
+  return ((end - start) / 1000).toFixed(2);
+}

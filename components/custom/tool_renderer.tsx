@@ -14,58 +14,51 @@ export const ToolRenderer = ({
 }) => {
   switch (part.type) {
     case "tool-displayWeather":
-      if (part.state === "input-available") {
-        return <Spinner text="Requesting Weather API...!" />;
-      }
+      // if (part.state === "input-available") {
+      //   return <Spinner text="Requesting Weather API...!" />;
+      // }
       if (part.state === "output-available") {
         //@ts-expect-error: ts error can ignore with -D
         return <Weather {...part.output} />;
       }
-      return <div>Error: {part.errorText}</div>;
+    // return <div>Error: {part.errorText}</div>;
 
     case "tool-createFileTool":
-      if (part.state === "input-available") {
-        return <Spinner text="Generating File...!" />;
-      }
+      // if (part.state === "input-available") {
+      //   return <Spinner text="Generating File...!" />;
+      // }
       if (part.state === "output-available") {
         //@ts-expect-error: ts error can ignore with -D
         return <GenFile {...part.output} />;
       }
-      return <div>Error: {part.errorText}</div>;
+    // return <div>Error: {part.errorText}</div>;
     case "tool-ragTool":
-      if (part.state === "input-available") {
-        return <Spinner text="Reading a file...!" />;
-      }
+      // if (part.state === "input-available") {
+      //   return <Spinner text="Reading a file...!" />;
+      // }
     case "tool-imageRecognitionTool":
-      if (part.state === "input-available") {
-        return <Spinner text="Analyzing image...!" />;
-      }
+      // if (part.state === "input-available") {
+      //   return <Spinner text="Analyzing image...!" />;
+      // }
     case "tool-webSearchTool":
-      if (part.state === "input-available") {
-        return <Spinner text="Searching internet!" />;
-      }
-    case "tool-arduinoTool":
-      if (part.state === "input-available") {
-        return <Spinner text="Checking Status of the ESP 32!" />;
-      }
-      if (part.state === "output-available") {
-        return null;
-      }
-      return <div>Error: {part.errorText}</div>;
+      // if (part.state === "input-available") {
+      //   return <Spinner text="Searching internet!" />;
+      // }
 
     case "tool-createChartTool":
-      if (part.state === "input-available") {
-        return <Spinner text="Generating Charts data...!" />;
-      }
+      // if (part.state === "input-available") {
+      //   return <Spinner text="Generating Charts data...!" />;
+      // }
       if (part.state === "output-available") {
         if (status === "ready") {
           //@ts-expect-error: ts error can ignore with -D
           return <Chart data={part.output} />;
-        } else {
-          return <Spinner text="Refreshing...." />;
         }
+        // else {
+        //   return <Spinner text="Refreshing...." />;
+        // }
       }
-      return <div>Error: {part.errorText}</div>;
+    // return <div>Error: {part.errorText}</div>;
 
     default:
       return null;
