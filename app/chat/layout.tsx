@@ -3,7 +3,7 @@ import Gallery from "@/components/custom/gallery";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import React, { ReactNode } from "react";
 import { DashboardWrapperContext } from "../api/context/dashboard_context";
-import Settings from "@/components/custom/settings";
+import Settings from "@/components/custom/settings/settings";
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
   return (
     <div className="w-full h-screen flex ">

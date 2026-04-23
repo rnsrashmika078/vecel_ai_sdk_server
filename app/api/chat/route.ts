@@ -3,25 +3,33 @@ import { streamText, UIMessage, convertToModelMessages, stepCountIs } from "ai";
 import { groq } from "@ai-sdk/groq";
 import { tools } from "@/app/helpers/tools";
 import { deltaTime } from "@/app/helpers/format";
+import { ReasoningEffort } from "@/app/types/type";
 
 export async function POST(req: Request) {
   try {
-    const { messages, test }: { messages: UIMessage[]; test: string } =
+    const {
+      messages,
+      reasoningEffort,
+    }: { messages: UIMessage[]; reasoningEffort: ReasoningEffort } =
       await req.json();
 
-    console.log(`custom values ${test}`);
+    console.log(`custom values ${reasoningEffort.effort}`);
     const result = streamText({
       model: groq("openai/gpt-oss-20b"),
       // model: groq("llama-3.3-70b-versatile"),
-      system: `You are a helpful assistant. use tool if user ask only`,
+      system: `You are a helpful assistant. use tool if user ask only. make sure to use chatTitle at the first message of the chat`,
       tools,
+
       providerOptions: {
         groq: {
-          reasoningFormat: "parsed",
-          reasoningEffort: "medium",
+          reasoningFormat:
+            reasoningEffort.effort === "none" ? "hidden" : "parsed",
+          ...(reasoningEffort.effort !== "none" && {
+            reasoningEffort: reasoningEffort.effort,
+          }),
         },
       },
-      // timeout: 60000,
+      timeout: 20000,
       // temperature: 0,
       // toolChoice: "auto",
       messages: await convertToModelMessages(messages),
@@ -63,24 +71,24 @@ export async function POST(req: Request) {
             status: "Working on it...",
           };
         }
-        // if (part.type === "tool-call") {
-        //   if (part.toolName.startsWith("tool-imageRecognitionTool"))
-        //     return {
-        //       status: `Analyzing image...!`,
-        //     };
-        //   if (part.toolName.startsWith("tool-createChartTool"))
-        //     return {
-        //       status: `Generating Chart UI`,
-        //     };
-        //   if (part.toolName.startsWith("tool-displayWeather"))
-        //     return {
-        //       status: `Requesting Weather API...!`,
-        //     };
-        //   if (part.toolName.startsWith("tool-webSearchTool"))
-        //     return {
-        //       status: `Searching internet...!`,
-        //     };
-        // }
+        if (part.type === "tool-call") {
+          if (part.toolName.startsWith("tool-imageRecognitionTool"))
+            return {
+              status: `Analyzing image...!`,
+            };
+          if (part.toolName.startsWith("tool-createChartTool"))
+            return {
+              status: `Generating Chart UI`,
+            };
+          if (part.toolName.startsWith("tool-displayWeather"))
+            return {
+              status: `Requesting Weather API...!`,
+            };
+          if (part.toolName.startsWith("tool-webSearchTool"))
+            return {
+              status: `Searching internet...!`,
+            };
+        }
         if (part.type === "finish") {
           return {
             status: "",

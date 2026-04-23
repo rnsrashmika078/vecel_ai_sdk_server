@@ -3,7 +3,7 @@
 "use client";
 import { useChat } from "@ai-sdk/react";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { DefaultChatTransport } from "ai";
+import { DefaultChatTransport, generateId } from "ai";
 import {
   InputGroup,
   InputGroupAddon,
@@ -20,7 +20,7 @@ import { SiFiles, SiLoop } from "react-icons/si";
 import { useDashboardContext } from "@/app/api/context/dashboard_context";
 import { FaStop } from "react-icons/fa";
 
-const ChatInterface = () => {
+const ChatInterface = ({ chatId }: { chatId: string }) => {
   const [currentId, setCurrentId] = useState<string | undefined>();
   const [input, setInput] = useState("");
 
@@ -28,8 +28,13 @@ const ChatInterface = () => {
   const [file, setFile] = useState<FileType | null>(null);
 
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const { setGalleryOpen, selectedResource, setSelectedResource } =
-    useDashboardContext();
+  const {
+    setGalleryOpen,
+    selectedResource,
+    setSelectedResource,
+    setChats,
+    reasoningEffort,
+  } = useDashboardContext();
   const {
     messages,
     sendMessage,
@@ -40,6 +45,7 @@ const ChatInterface = () => {
     error,
     id,
   } = useChat<MyUIMessage>({
+    id: chatId,
     experimental_throttle: 50,
     transport: new DefaultChatTransport({
       api: `/api/chat`,
@@ -87,7 +93,7 @@ const ChatInterface = () => {
             { text: input },
             {
               body: {
-                test: "test_01",
+                reasoningEffort,
               },
             },
           );
@@ -103,6 +109,10 @@ const ChatInterface = () => {
                 if (e.key === "Enter") {
                   e.preventDefault();
                   e.currentTarget.form?.requestSubmit();
+                  if (messages.length == 0) {
+                    const chatId = generateId();
+                    setChats((prev) => [...prev, chatId]);
+                  }
                 }
               }}
               value={input}

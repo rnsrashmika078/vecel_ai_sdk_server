@@ -1,10 +1,10 @@
 import { z } from "zod";
 import { tool as createTool } from "ai";
 import { createFile } from "./file_operation";
-import { groq } from "../libs/groqClient";
 import { storeEmbeddings } from "../actions/store";
 import { retriveEmbeddings } from "../actions/retrive";
 import { requestWeatherAPI } from "./tool_helpers";
+import { groq } from "../utils/groqClient";
 
 export const weatherTool = createTool({
   description: "weather for user given location",
@@ -23,7 +23,16 @@ export const weatherTool = createTool({
     };
   },
 });
-
+export const chatTitle = createTool({
+  description:
+    "declare a title for current chat based on first message on chat beginning",
+  inputSchema: z.object({
+    title: z.string(),
+  }),
+  execute: async ({ title }) => {
+    return `${title}`;
+  },
+});
 // create a file ( just for testing )
 export const createFileTool = createTool({
   description: "create a file",
@@ -123,4 +132,5 @@ export const tools = {
   imageRecognitionTool,
   webSearchTool,
   // ragTool,
+  chatTitle,
 };

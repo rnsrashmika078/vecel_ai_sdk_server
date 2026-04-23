@@ -45,3 +45,8 @@ export type MessageMetadataT = {
   reasoning_status?: string;
 };
 export type MyUIMessage = UIMessage<MessageMetadataT>;
+
+//settings
+export type ReasoningEffort = {
+  effort: "low" | "medium" | "high" | "none";
+};

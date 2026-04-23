@@ -12,14 +12,23 @@ export const ToolRenderer = ({
   status: ChatStatus;
   part: UIMessagePart<UIDataTypes, UITools>;
 }) => {
+  console.log(`part.type: ${part.type}`);
+
   switch (part.type) {
-    case "tool-displayWeather":
+    case "tool-weatherTool":
       // if (part.state === "input-available") {
       //   return <Spinner text="Requesting Weather API...!" />;
       // }
       if (part.state === "output-available") {
+        console.log(`output avaiable: ${part.state}`);
         //@ts-expect-error: ts error can ignore with -D
         return <Weather {...part.output} />;
+      }
+    case "tool-chatTitle":
+      if (part.state === "output-available") {
+        console.log(`output avaiable: ${part.state}`);
+        console.log(`output avaiable: ${part.output}`);
+        return;
       }
     // return <div>Error: {part.errorText}</div>;
 
@@ -33,17 +42,17 @@ export const ToolRenderer = ({
       }
     // return <div>Error: {part.errorText}</div>;
     case "tool-ragTool":
-      // if (part.state === "input-available") {
-      //   return <Spinner text="Reading a file...!" />;
-      // }
+    // if (part.state === "input-available") {
+    //   return <Spinner text="Reading a file...!" />;
+    // }
     case "tool-imageRecognitionTool":
-      // if (part.state === "input-available") {
-      //   return <Spinner text="Analyzing image...!" />;
-      // }
+    // if (part.state === "input-available") {
+    //   return <Spinner text="Analyzing image...!" />;
+    // }
     case "tool-webSearchTool":
-      // if (part.state === "input-available") {
-      //   return <Spinner text="Searching internet!" />;
-      // }
+    // if (part.state === "input-available") {
+    //   return <Spinner text="Searching internet!" />;
+    // }
 
     case "tool-createChartTool":
       // if (part.state === "input-available") {

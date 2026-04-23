@@ -1,8 +1,8 @@
 import ChatInterface from "@/components/custom/chat_interface";
-import React from "react";
+import { redirect } from "next/navigation";
 
 const page = () => {
-  return <ChatInterface />;
+  redirect(`/chat/welcome`);
 };
 
 export default page;

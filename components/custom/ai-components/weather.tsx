@@ -1,8 +1,8 @@
 "use client";
 
 import { Wind } from "lucide-react";
-import { FaTemperatureArrowDown, FaTemperatureHalf } from "react-icons/fa6";
-import { MdSunny } from "react-icons/md";
+import { FaTemperatureHalf } from "react-icons/fa6";
+import { MdLocationOn, MdOutlineWbSunny } from "react-icons/md";
 
 type WeatherProps = {
   temperature?: number;
@@ -20,39 +20,63 @@ export const Weather = ({
   location,
 }: WeatherProps) => {
   const date = new Date().toDateString();
+
   return (
-    <div className="p-5 w-full bg-blue-500 mb-5 rounded-xl">
-      <div className="flex w-full justify-between space-y-5">
+    <div className="mt-5 mb-5 relative w-full p-6 rounded-2xl overflow-hidden 
+      bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700
+      shadow-xl text-white">
+
+      {/* soft glow background */}
+      <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/20 blur-3xl rounded-full" />
+      <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-cyan-300/20 blur-3xl rounded-full" />
+
+      {/* Top section */}
+      <div className="flex justify-between items-start mb-6">
         <div>
-          <span className="text-xs italic text-[#00ff04]">Location</span>
-          <p className="text-md  font-extralight text-2xl text-white">
+          <div className="flex items-center gap-1 text-xs text-white/70">
+            <MdLocationOn />
             {location}
-          </p>
-          <p className="text-md font-extralight text-xs text-[#dbdbdb]">
-            {date}
-          </p>
+          </div>
+          <h2 className="text-sm text-white/60">{date}</h2>
         </div>
-        <div>
-          <span className="text-xs italic text-[#00ff04]">Condition</span>
-          <div className="flex items-center">
-            <p className="text-md font-extralight text-xl text-[#dbdbdb]">
-              {weather}
-            </p>
-            <img src={icon} alt="weather icon" width={50} height={50} />
+
+        <div className="flex items-center gap-2 bg-white/10 px-3 py-1 rounded-full backdrop-blur-md">
+          <span className="text-sm">{weather}</span>
+          {icon && (
+            <img src={icon} alt="weather icon" className="w-10 h-10" />
+          )}
+        </div>
+      </div>
+
+      {/* Temperature */}
+      <div className="flex items-end gap-3 mb-6">
+        <h1 className="text-6xl font-light tracking-tight">
+          {temperature ?? 24}
+        </h1>
+        <div className="flex items-center gap-1 text-white/80 mb-2">
+          <span>°C</span>
+          <FaTemperatureHalf />
+        </div>
+      </div>
+
+      {/* Bottom stats */}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="bg-white/10 rounded-xl p-4 backdrop-blur-md">
+          <div className="text-xs text-white/60 mb-1">Wind Speed</div>
+          <div className="flex items-center gap-2 text-lg">
+            <Wind size={18} />
+            {wind ?? 24} km/h
+          </div>
+        </div>
+
+        <div className="bg-white/10 rounded-xl p-4 backdrop-blur-md">
+          <div className="text-xs text-white/60 mb-1">Condition</div>
+          <div className="flex items-center gap-2 text-lg">
+            <MdOutlineWbSunny />
+            {weather}
           </div>
         </div>
       </div>
-      <span className="text-xs italic text-[#00ff04]">Temperature</span>
-      <h1 className="text-4xl font-extralight flex gap-1 text-[#dbdbdb]">
-        {temperature ?? 24} <span className="text-sm">{" °C"}</span>
-        <FaTemperatureHalf />
-      </h1>
-      <span className="text-xs italic text-[#00ff04]">Wind Speed</span>
-      <h1 className="text-4xl items-center font-extralight flex gap-2 text-[#dbdbdb]">
-        {wind ?? 24}
-        <span className="text-sm"> {" km/h"}</span>
-        <Wind />
-      </h1>
     </div>
   );
 };

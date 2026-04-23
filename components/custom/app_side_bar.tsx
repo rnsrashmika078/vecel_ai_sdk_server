@@ -11,11 +11,25 @@ import {
   SidebarHeader,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Folder, Home, MessageSquare, Plus, Settings } from "lucide-react";
-
+import {
+  Edit,
+  Folder,
+  Home,
+  MessageSquare,
+  Plus,
+  Settings,
+} from "lucide-react";
+import { generateId } from "ai";
+import { useRouter } from "next/navigation";
 export function AppSidebar() {
-  const { setSettingOpen } = useDashboardContext();
+  const router = useRouter();
+  const { setSettingOpen, setChats, chats } = useDashboardContext();
   const { toggleSidebar } = useSidebar();
+  const createNewChat = () => {
+    const id = generateId();
+    setChats((prev) => [...prev, id]);
+    router.push(`/chat/${id}`);
+  };
 
   return (
     <>
@@ -31,7 +45,14 @@ export function AppSidebar() {
             </SidebarGroupAction>
 
             <SidebarGroupContent className="flex flex-col gap-1">
-              <button className="flex items-center gap-2 p-2 rounded-md hover:bg-accent">
+              <button
+                className="flex items-center gap-2 p-2 rounded-md hover:bg-accent"
+                onClick={() => createNewChat()}
+              >
+                <Edit size={16} />
+                <span>New chat</span>
+              </button>
+              {/* <button className="flex items-center gap-2 p-2 rounded-md hover:bg-accent">
                 <Home size={16} />
                 <span>Dashboard</span>
               </button>
@@ -44,7 +65,7 @@ export function AppSidebar() {
               <button className="flex items-center gap-2 p-2 rounded-md hover:bg-accent">
                 <Folder size={16} />
                 <span>Projects</span>
-              </button>
+              </button> */}
 
               <button
                 className="flex items-center gap-2 p-2 rounded-md hover:bg-accent"
@@ -62,15 +83,22 @@ export function AppSidebar() {
 
           <SidebarGroup>
             <SidebarGroupLabel>Recent</SidebarGroupLabel>
-
             <SidebarGroupContent className="flex flex-col gap-1">
-              <button className="p-2 rounded-md hover:bg-accent text-sm text-muted-foreground">
+              {/* <button className="p-2 rounded-md hover:bg-accent text-sm text-muted-foreground">
                 AI Chat App
               </button>
 
               <button className="p-2 rounded-md hover:bg-accent text-sm text-muted-foreground">
                 Dashboard UI
-              </button>
+              </button> */}
+              {chats.map((c) => (
+                <p
+                  key={c}
+                  className="px-4 rounded-md hover:bg-accent text-sm text-muted-foreground"
+                >
+                  {c}
+                </p>
+              ))}
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>

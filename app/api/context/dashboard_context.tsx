@@ -1,7 +1,6 @@
 "use client";
-import { GalleryItem } from "@/app/types/type";
+import { GalleryItem, ReasoningEffort } from "@/app/types/type";
 import { createContext, useContext, useState } from "react";
-import { multipleOf } from "zod";
 
 export type DashboardContextType = {
   galleryOpen: boolean;
@@ -11,6 +10,12 @@ export type DashboardContextType = {
 
   selectedResource: GalleryItem | null;
   setSelectedResource: React.Dispatch<React.SetStateAction<GalleryItem | null>>;
+
+  chats: string[];
+  setChats: React.Dispatch<React.SetStateAction<string[]>>;
+
+  reasoningEffort: ReasoningEffort;
+  setReasoningEffort: React.Dispatch<React.SetStateAction<ReasoningEffort>>;
 };
 const DashboardContext = createContext<DashboardContextType | null>(null);
 
@@ -21,9 +26,13 @@ export const DashboardWrapperContext = ({
 }) => {
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [settingOpen, setSettingOpen] = useState(false);
+  const [reasoningEffort, setReasoningEffort] = useState<ReasoningEffort>({
+    effort: "medium",
+  });
   const [selectedResource, setSelectedResource] = useState<GalleryItem | null>(
     null,
   );
+  const [chats, setChats] = useState<string[]>([]);
 
   return (
     <DashboardContext.Provider
@@ -34,6 +43,12 @@ export const DashboardWrapperContext = ({
         setSelectedResource,
         settingOpen,
         setSettingOpen,
+
+        chats,
+        setChats,
+
+        reasoningEffort,
+        setReasoningEffort,
       }}
     >
       {children}
