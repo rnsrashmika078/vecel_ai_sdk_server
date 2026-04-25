@@ -16,7 +16,6 @@ export async function GET() {
       resource_type: "image", // The Admin API requires you to pick one, or loop through types
       max_results: 50,
     });
-    console.log(result);
     return NextResponse.json({ resources: result.resources });
   } catch (err) {
     return NextResponse.json(

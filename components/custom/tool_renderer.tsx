@@ -3,7 +3,7 @@ import { ChatStatus, UIDataTypes, UIMessagePart, UITools } from "ai";
 import Chart from "./ai-components/chart";
 import GenFile from "./ai-components/generated_file";
 import { Weather } from "./ai-components/weather";
-import Spinner from "./spinner";
+import { useDashboardContext } from "@/app/api/context/dashboard_context";
 
 export const ToolRenderer = ({
   part,
@@ -12,7 +12,7 @@ export const ToolRenderer = ({
   status: ChatStatus;
   part: UIMessagePart<UIDataTypes, UITools>;
 }) => {
-  console.log(`part.type: ${part.type}`);
+  const { setChats } = useDashboardContext();
 
   switch (part.type) {
     case "tool-weatherTool":
@@ -20,16 +20,16 @@ export const ToolRenderer = ({
       //   return <Spinner text="Requesting Weather API...!" />;
       // }
       if (part.state === "output-available") {
-        console.log(`output avaiable: ${part.state}`);
         //@ts-expect-error: ts error can ignore with -D
         return <Weather {...part.output} />;
       }
-    case "tool-chatTitle":
-      if (part.state === "output-available") {
-        console.log(`output avaiable: ${part.state}`);
-        console.log(`output avaiable: ${part.output}`);
-        return;
-      }
+    // case "tool-chatTitle":
+    //   if (part.state === "output-available") {
+    //     console.log(`output avaiable: ${part.state}`);
+    //     console.log(`output avaiable: ${part.output}`);
+    //     setChats((prev) => [...prev, part.output as string]);
+    //     return;
+    //   }
     // return <div>Error: {part.errorText}</div>;
 
     case "tool-createFileTool":
@@ -40,16 +40,23 @@ export const ToolRenderer = ({
         //@ts-expect-error: ts error can ignore with -D
         return <GenFile {...part.output} />;
       }
+      return;
     // return <div>Error: {part.errorText}</div>;
     case "tool-ragTool":
-    // if (part.state === "input-available") {
-    //   return <Spinner text="Reading a file...!" />;
-    // }
+      // if (part.state === "input-available") {
+      //   return <Spinner text="Reading a file...!" />;
+      // }
+      return;
+
     case "tool-imageRecognitionTool":
+      return;
+
     // if (part.state === "input-available") {
     //   return <Spinner text="Analyzing image...!" />;
     // }
     case "tool-webSearchTool":
+      return;
+
     // if (part.state === "input-available") {
     //   return <Spinner text="Searching internet!" />;
     // }
@@ -67,6 +74,8 @@ export const ToolRenderer = ({
         //   return <Spinner text="Refreshing...." />;
         // }
       }
+      return;
+
     // return <div>Error: {part.errorText}</div>;
 
     default:

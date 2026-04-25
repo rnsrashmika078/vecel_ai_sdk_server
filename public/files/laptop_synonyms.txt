@@ -1,0 +1,11 @@
+Laptop synonyms:
+- notebook
+- portable computer
+- notebook computer
+- notebook PC
+- clamshell computer
+- mobile computer
+- tablet (if convertible)
+- ultrabook
+- netbook
+- compact computer

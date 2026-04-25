@@ -1,4 +1,3 @@
-import { deltaTime } from "@/app/helpers/format";
 import { ChatStatus } from "ai";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -27,29 +26,29 @@ const ChatMessages = memo(
   }) => {
     return (
       <>
-        {messages.map((message) => (
+        {messages?.map((message) => (
           <div
-            key={message.id}
+            key={message?.id}
             className={`p-2 flex w-full ${
-              message.role === "user" ? "justify-end" : "justify-start"
+              message?.role === "user" ? "justify-end" : "justify-start"
             }`}
           >
             <div
               className={`p-2 rounded-md ${
-                message.role === "user"
+                message?.role === "user"
                   ? "justify-end items-end bg-message"
                   : "w-full justify-start"
               }`}
             >
-              {message.metadata?.status && (
+              {message?.metadata?.status && (
                 <div className="flex items-center gap-2">
                   <GiAbstract021 className="animate-spin" />
-                  <span>{message.metadata.status}</span>
+                  <span>{message?.metadata?.status}</span>
                 </div>
               )}
 
-              {message.parts.map((part, index) => {
-                if (part.type === "text") {
+              {message?.parts?.map((part, index) => {
+                if (part?.type === "text") {
                   return (
                     <div key={index}>
                       <ReactMarkdown
@@ -163,13 +162,13 @@ const ChatMessages = memo(
                           },
                         }}
                       >
-                        {part.text}
+                        {part?.text}
                       </ReactMarkdown>
                     </div>
                   );
                 }
 
-                if (part.type === "reasoning") {
+                if (part?.type === "reasoning") {
                   return (
                     <div
                       key={index}
@@ -182,8 +181,8 @@ const ChatMessages = memo(
                       >
                         <AccordionItem value="item-1">
                           <AccordionTrigger className="font-bold ">
-                            {message.metadata?.reasoning_status &&
-                              message.metadata.reasoning_status}
+                            {message?.metadata?.reasoning_status &&
+                              message?.metadata?.reasoning_status}
                           </AccordionTrigger>
                           <AccordionContent className="h-full">
                             <ReactMarkdown>{part.text}</ReactMarkdown>
@@ -193,21 +192,24 @@ const ChatMessages = memo(
                     </div>
                   );
                 }
-                if (part.type.startsWith("tool")) {
+                if (part?.type.startsWith("tool")) {
                   return (
                     <ToolRenderer part={part} status={status} key={index} />
                   );
                 }
               })}
-              {message.metadata?.totalTokens && (
+              {/* totalTokens */}
+              {/* reasoning_status */}
+              {/* status */}
+              {message?.metadata?.totalTokens && (
                 <span className="text-xs text-red-500 font-bold border p-1 rounded-md border-gray-900 bg-gray-800">
-                  {message.metadata.totalTokens} tokens
+                  {message?.metadata?.totalTokens} tokens
                 </span>
               )}
             </div>
           </div>
         ))}
-        {messages.length > 1 ? (
+        {messages?.length > 1 ? (
           status === "error" ||
           (status === "ready" && (
             <div className=" flex w-full justify-start">

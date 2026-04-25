@@ -13,7 +13,6 @@ export async function POST(req: NextRequest) {
   try {
     const { url } = await req.json();
 
-    console.log("URL ", url);
     const data = await readPDF(url);
 
     if (!data)

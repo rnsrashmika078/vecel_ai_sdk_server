@@ -8,7 +8,6 @@ type History = {
 export async function POST(req: Request) {
   try {
     const { prompt, system, history } = await req.json();
-    console.log("prompt", prompt);
     const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {

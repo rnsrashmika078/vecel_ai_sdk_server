@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { streamText, UIMessage, convertToModelMessages, stepCountIs } from "ai";
 import { groq } from "@ai-sdk/groq";
 import { tools } from "@/app/helpers/tools";
@@ -10,22 +9,24 @@ export async function POST(req: Request) {
     const {
       messages,
       reasoningEffort,
-    }: { messages: UIMessage[]; reasoningEffort: ReasoningEffort } =
-      await req.json();
+    }: {
+      messages: UIMessage[];
+      reasoningEffort: ReasoningEffort;
+    } = await req.json();
 
-    console.log(`custom values ${reasoningEffort.effort}`);
     const result = streamText({
       model: groq("openai/gpt-oss-20b"),
+      maxOutputTokens: 300,
       // model: groq("llama-3.3-70b-versatile"),
-      system: `You are a helpful assistant. use tool if user ask only. make sure to use chatTitle at the first message of the chat`,
+      system: `You are a helpful assistant. use tool if user ask only. `,
       tools,
 
       providerOptions: {
         groq: {
           reasoningFormat:
-            reasoningEffort.effort === "none" ? "hidden" : "parsed",
-          ...(reasoningEffort.effort !== "none" && {
-            reasoningEffort: reasoningEffort.effort,
+            reasoningEffort?.effort === "none" ? "hidden" : "parsed",
+          ...(reasoningEffort?.effort !== "none" && {
+            reasoningEffort: reasoningEffort?.effort,
           }),
         },
       },
@@ -46,11 +47,10 @@ export async function POST(req: Request) {
         }
         if (part.type === "reasoning-start") {
           reasoningStart = Date.now();
-
           return {
             status: "Thinking...",
             start: new Date().getTime(),
-            reasoning_status: "reasoning...",
+            reasoning_status: "reasoning",
           };
         }
         if (part.type === "reasoning-delta") {
@@ -90,9 +90,11 @@ export async function POST(req: Request) {
             };
         }
         if (part.type === "finish") {
+          const totalTokens = part.totalUsage.totalTokens?.toString();
+
           return {
             status: "",
-            totalTokens: part.totalUsage.totalTokens,
+            totalTokens: totalTokens,
           };
         }
       },

@@ -50,3 +50,9 @@ export type MyUIMessage = UIMessage<MessageMetadataT>;
 export type ReasoningEffort = {
   effort: "low" | "medium" | "high" | "none";
 };
+
+export type ChatsListType = {
+  id?: string;
+  title: string;
+  chat_id: string;
+};

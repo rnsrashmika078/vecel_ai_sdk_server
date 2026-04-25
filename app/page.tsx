@@ -6,13 +6,12 @@ import {
 } from "@/components/ui/input-group";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
-import { Plus, ArrowRight } from "lucide-react";
-import { useState, useRef } from "react";
-import { FileType, MyUIMessage } from "./types/type";
+import { ArrowRight } from "lucide-react";
+import { useState } from "react";
+import { MyUIMessage } from "./types/type";
 import TextareaAutosize from "react-textarea-autosize";
 import ReactMarkdown from "react-markdown";
 import { BiAddToQueue } from "react-icons/bi";
-import Spinner from "@/components/custom/spinner";
 import { FaStop } from "react-icons/fa";
 import { LuRefreshCcw } from "react-icons/lu";
 import { GiAbstract021 } from "react-icons/gi";
@@ -90,10 +89,13 @@ const MainPage = () => {
                       <Accordion
                         type="single"
                         collapsible
+                        key={`accordion-${message.id}-${index}`} // ← Add stable key
                         defaultValue="item-1"
                       >
                         <AccordionItem value="item-1">
-                          <AccordionTrigger className="">Thinking</AccordionTrigger>
+                          <AccordionTrigger className="">
+                            Thinking
+                          </AccordionTrigger>
                           <AccordionContent className="h-full">
                             <ReactMarkdown>{part.text}</ReactMarkdown>
                           </AccordionContent>

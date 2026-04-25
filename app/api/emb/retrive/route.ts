@@ -23,7 +23,6 @@ export async function POST(req: NextRequest) {
       nResults: 1,
     });
 
-    // console.log(results.metadatas);
 
     return NextResponse.json({ success: true, results });
   } catch (err) {

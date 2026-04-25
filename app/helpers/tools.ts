@@ -25,7 +25,7 @@ export const weatherTool = createTool({
 });
 export const chatTitle = createTool({
   description:
-    "declare a title for current chat based on first message on chat beginning",
+    "title for chat on chat beginning",
   inputSchema: z.object({
     title: z.string(),
   }),
@@ -132,5 +132,5 @@ export const tools = {
   imageRecognitionTool,
   webSearchTool,
   // ragTool,
-  chatTitle,
+  // chatTitle,
 };

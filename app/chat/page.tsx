@@ -1,8 +1,9 @@
-import ChatInterface from "@/components/custom/chat_interface";
 import { redirect } from "next/navigation";
+import { generateId } from "ai";
 
 const page = () => {
-  redirect(`/chat/welcome`);
+  const id = generateId();
+  redirect(`/chat/${id}`);
 };
 
 export default page;

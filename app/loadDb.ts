@@ -20,7 +20,6 @@ const db = client.db(ASTRA_DB_ENDPOINT!, {
 
 (async () => {
   const colls = await db.listCollections();
-  console.log("Connected to AstraDB:", colls);
 })();
 
 const splitter = new RecursiveCharacterTextSplitter({

@@ -1,5 +1,5 @@
 "use client";
-import { GalleryItem, ReasoningEffort } from "@/app/types/type";
+import { ChatsListType, GalleryItem, ReasoningEffort } from "@/app/types/type";
 import { createContext, useContext, useState } from "react";
 
 export type DashboardContextType = {
@@ -11,8 +11,8 @@ export type DashboardContextType = {
   selectedResource: GalleryItem | null;
   setSelectedResource: React.Dispatch<React.SetStateAction<GalleryItem | null>>;
 
-  chats: string[];
-  setChats: React.Dispatch<React.SetStateAction<string[]>>;
+  chats: ChatsListType[];
+  setChats: React.Dispatch<React.SetStateAction<ChatsListType[]>>;
 
   reasoningEffort: ReasoningEffort;
   setReasoningEffort: React.Dispatch<React.SetStateAction<ReasoningEffort>>;
@@ -32,7 +32,7 @@ export const DashboardWrapperContext = ({
   const [selectedResource, setSelectedResource] = useState<GalleryItem | null>(
     null,
   );
-  const [chats, setChats] = useState<string[]>([]);
+  const [chats, setChats] = useState<ChatsListType[]>([]);
 
   return (
     <DashboardContext.Provider

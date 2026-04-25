@@ -11,25 +11,27 @@ import {
   SidebarHeader,
   useSidebar,
 } from "@/components/ui/sidebar";
-import {
-  Edit,
-  Folder,
-  Home,
-  MessageSquare,
-  Plus,
-  Settings,
-} from "lucide-react";
-import { generateId } from "ai";
+import { Edit, Plus, Settings } from "lucide-react";
 import { useRouter } from "next/navigation";
-export function AppSidebar() {
+import { memo, useEffect } from "react";
+import { getChats } from "@/app/utils/supabase/action_client";
+export const AppSidebar = memo(() => {
   const router = useRouter();
-  const { setSettingOpen, setChats, chats } = useDashboardContext();
+  const { setSettingOpen, chats, setChats } = useDashboardContext();
   const { toggleSidebar } = useSidebar();
   const createNewChat = () => {
-    const id = generateId();
-    setChats((prev) => [...prev, id]);
-    router.push(`/chat/${id}`);
+    router.push(`/chat/`);
   };
+
+  useEffect(() => {
+    const receiveChats = async () => {
+      const allchats = await getChats({ table: "chats" });
+      setChats(allchats);
+    };
+
+    receiveChats();
+  }, []);
+
 
   return (
     <>
@@ -70,6 +72,7 @@ export function AppSidebar() {
               <button
                 className="flex items-center gap-2 p-2 rounded-md hover:bg-accent"
                 onClick={() => {
+                  if (typeof window === "undefined") return;
                   setSettingOpen((pre) => !pre);
                   window.location.hash = "settings";
                   toggleSidebar();
@@ -92,12 +95,15 @@ export function AppSidebar() {
                 Dashboard UI
               </button> */}
               {chats.map((c) => (
-                <p
-                  key={c}
-                  className="px-4 rounded-md hover:bg-accent text-sm text-muted-foreground"
+                <span
+                  key={c.chat_id}
+                  onClick={() => {
+                    router.push(`/chat/${c.chat_id}`);
+                  }}
+                  className="p-2 rounded-md hover:bg-accent text-sm text-muted-foreground"
                 >
-                  {c}
-                </p>
+                  {c.title}
+                </span>
               ))}
             </SidebarGroupContent>
           </SidebarGroup>
@@ -107,4 +113,6 @@ export function AppSidebar() {
       </Sidebar>
     </>
   );
-}
+});
+
+AppSidebar.displayName = "AppSidebar";
