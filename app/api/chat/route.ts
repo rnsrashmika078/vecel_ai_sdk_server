@@ -20,6 +20,7 @@ export async function POST(req: Request) {
       // model: groq("llama-3.3-70b-versatile"),
       system: `You are a helpful assistant. use tool if user ask only. `,
       tools,
+      // activeTools
 
       providerOptions: {
         groq: {
@@ -101,5 +102,9 @@ export async function POST(req: Request) {
     });
   } catch (err) {
     console.log(err);
+    if (err instanceof Error) {
+      throw new Error(err.message);
+    }
+    throw new Error(JSON.stringify(err));
   }
 }

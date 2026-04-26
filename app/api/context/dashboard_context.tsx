@@ -14,6 +14,9 @@ export type DashboardContextType = {
   chats: ChatsListType[];
   setChats: React.Dispatch<React.SetStateAction<ChatsListType[]>>;
 
+  activeChat: string;
+  setActiveChat: React.Dispatch<React.SetStateAction<string>>;
+
   reasoningEffort: ReasoningEffort;
   setReasoningEffort: React.Dispatch<React.SetStateAction<ReasoningEffort>>;
 };
@@ -26,6 +29,7 @@ export const DashboardWrapperContext = ({
 }) => {
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [settingOpen, setSettingOpen] = useState(false);
+  const [activeChat, setActiveChat] = useState("");
   const [reasoningEffort, setReasoningEffort] = useState<ReasoningEffort>({
     effort: "medium",
   });
@@ -49,6 +53,9 @@ export const DashboardWrapperContext = ({
 
         reasoningEffort,
         setReasoningEffort,
+
+        activeChat,
+        setActiveChat,
       }}
     >
       {children}

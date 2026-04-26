@@ -100,7 +100,16 @@ const Gallery = memo(() => {
             .map((item) => (
               <div
                 key={item.asset_id}
-                onClick={() => setSelectedResource(item)}
+                onClick={() => {
+                  if (typeof window === "undefined") return;
+                  setSelectedResource(item);
+                  setGalleryOpen(false);
+                  window.history.replaceState(
+                    null,
+                    "",
+                    window.location.pathname,
+                  );
+                }}
               >
                 {item.format.includes("pdf") ? (
                   <>
@@ -140,7 +149,7 @@ const Gallery = memo(() => {
             className="flex mt-5 justify-center items-center 
           top-1/2 left-1/2 w-full h-full "
           >
-            <Spinner text="Loading...Please Wait..!" />
+            <Spinner text="" />
           </div>
         ) : (
           <div
@@ -166,13 +175,10 @@ export const ComboboxBasic = memo(
   }: {
     setSelection: React.Dispatch<React.SetStateAction<string>>;
   }) => {
-    const { selectedResource } = useDashboardContext();
     return (
       <div className="sticky top-0 rounded-xl">
         <Combobox items={frameworks}>
-          <ComboboxInput
-            placeholder={selectedResource?.display_name ?? "Images"}
-          />
+          <ComboboxInput placeholder={"Images"} />
           <ComboboxContent className="">
             <ComboboxEmpty>No items found.</ComboboxEmpty>
             <ComboboxList>
@@ -180,7 +186,9 @@ export const ComboboxBasic = memo(
                 <ComboboxItem
                   key={item}
                   value={item}
-                  onClick={() => setSelection(item)}
+                  onClick={() => {
+                    setSelection(item);
+                  }}
                 >
                   {item}
                 </ComboboxItem>

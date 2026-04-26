@@ -82,11 +82,13 @@ const ChatMessages = memo(
                           strong: ({ children }) => (
                             <strong className="font-bold ">{children}</strong>
                           ),
-                          // em: ({ children }) => (
-                          //   <div className="border-l-4 rounded-md px-2 mt-2 bg-textarea">
-                          //     <em className="italic text-blue-500">{children}</em>
-                          //   </div>
-                          // ),
+                          em: ({ children }) => (
+                            <div className="border-l-4 rounded-md px-2 mt-2 bg-textarea">
+                              <em className="italic text-blue-500">
+                                {children}
+                              </em>
+                            </div>
+                          ),
                           table: ({ children }) => (
                             <table className=" mt-2">{children}</table>
                           ),

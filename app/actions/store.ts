@@ -1,11 +1,11 @@
 "use server";
 import { NextRequest, NextResponse } from "next/server";
-import { splitter } from "@/app/libs/splitter";
 
-import { embeddings } from "@/app/libs/embeddingsHF";
-import { chromaClient } from "@/app/libs/chromaClient";
 import { readPDF } from "@/app/helpers/file_operation";
 import crypto from "crypto";
+import { chromaClient } from "../utils/chromaClient";
+import { splitter } from "../utils/splitter";
+import { embeddings } from "../utils/embeddingsHF";
 
 const collection = chromaClient.getOrCreateCollection({
   name: "test",
@@ -14,40 +14,36 @@ const collection = chromaClient.getOrCreateCollection({
 export async function storeEmbeddings({ url }: { url: string }) {
   try {
     if (!url) return;
+    const existing = await (
+      await collection
+    ).get({
+      where: { source: url },
+    });
+
+    if (existing.ids.length > 0)
+      return NextResponse.json({ success: true, error: "Embedding Exist" });
 
     const data = await readPDF(url);
+    console.log(`data : ${data}`);
 
     if (!data)
       return NextResponse.json({ success: false, error: "No text provided" });
 
-
-    const existing = await (
+    const chunks = await splitter.splitText(data);
+    const vectors = await embeddings.embedDocuments(chunks);
+    const ids = chunks.map(() => crypto.randomUUID());
+    await (
       await collection
-    ).get({
-      limit: 1,
+    ).add({
+      ids,
+      documents: chunks,
+      embeddings: vectors,
+      metadatas: chunks.map((chunk) => ({
+        chunk,
+        source: url,
+      })),
     });
-
-    if (existing.ids.length == 0) {
-      const chunks = await splitter.splitText(data);
-      const storedIds: string[] = [];
-
-      for await (const chunk of chunks) {
-        const vector = await embeddings.embedQuery(chunk);
-        const id = crypto.randomUUID();
-
-        await (
-          await collection
-        ).add({
-          ids: [id],
-          metadatas: [{ chunk }],
-          embeddings: [vector],
-        });
-        storedIds.push(id);
-      }
-      return NextResponse.json({ success: true });
-    }
-
-    return NextResponse.json({ success: false });
+    return NextResponse.json({ success: true });
   } catch (err) {
     console.error(err);
     return NextResponse.json({ success: false, error: (err as Error).message });

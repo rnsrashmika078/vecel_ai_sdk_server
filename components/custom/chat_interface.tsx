@@ -1,6 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @next/next/no-img-element */
 "use client";
 import { useChat } from "@ai-sdk/react";
 import { ChangeEvent, memo, useEffect, useMemo, useRef, useState } from "react";
@@ -16,7 +14,11 @@ import { FileType, MyUIMessage } from "@/app/types/type";
 import { ArrowRight, Plus } from "lucide-react";
 import Spinner from "./spinner";
 const ChatMessages = dynamic(() => import("./chat_messages"), {
-  loading: () => <Spinner text="Loading...Please Wait...!" />,
+  loading: () => (
+    <div className="flex justify-center items-center">
+      <Spinner text="" />
+    </div>
+  ),
 });
 import Image from "next/image";
 import { TiDelete } from "react-icons/ti";
@@ -26,7 +28,7 @@ import { FaStop } from "react-icons/fa";
 import { generateTitle } from "@/app/helpers/tool_helpers";
 import dynamic from "next/dynamic";
 import { createClient } from "@/app/utils/supabase/client";
-import { snapshot } from "@/app/utils/supabase/action_client";
+import { upsertMessage } from "@/app/utils/supabase/server_actions";
 
 const ChatInterface = memo(
   ({
@@ -42,6 +44,7 @@ const ChatInterface = memo(
 
     const [loading, setLoading] = useState<boolean>(false);
     const [file, setFile] = useState<FileType | null>(null);
+    // const [blob, setBlob] = useState<FileList | null>(null);
 
     const inputRef = useRef<HTMLInputElement | null>(null);
     const {
@@ -56,10 +59,10 @@ const ChatInterface = memo(
       sendMessage,
       stop,
       status,
-      resumeStream,
+      // resumeStream,
       regenerate,
-      error,
-      id,
+      // error,
+      // id,
     } = useChat<MyUIMessage>({
       id: chatId,
       experimental_throttle: 50,
@@ -67,6 +70,9 @@ const ChatInterface = memo(
       transport: new DefaultChatTransport({
         api: `/api/chat`,
       }),
+      onError: (error) => {
+        console.error("An error occurred:", error);
+      },
       onData: (data) => {
         console.log("Received data part from server:", data);
       },
@@ -74,7 +80,11 @@ const ChatInterface = memo(
 
     const handleFileupload = async (e: ChangeEvent<HTMLInputElement>) => {
       const file: File | undefined = e.target.files?.[0];
+      // const multipleFile = e.target.files;
+
+      // if (file && multipleFile) {
       if (file) {
+        // setBlob(multipleFile);
         setLoading(true);
         const payload = await CloudinaryUpload(file);
         setFile(payload);
@@ -89,7 +99,7 @@ const ChatInterface = memo(
 
       try {
         const supabase = createClient();
-        const { data, error } = await supabase
+        const { error } = await supabase
           .from("chats")
           .insert({ chat_id: chatId, title })
           .select()
@@ -112,16 +122,22 @@ const ChatInterface = memo(
       if (status === "ready") {
         if (!metadata) return;
         const supabaseAction = async () => {
-          await snapshot({ messages: messages, chatId }); // name must change
+          await upsertMessage({ messages: messages, chatId }); // name must change
         };
         supabaseAction();
       }
     }, [status, chatId, metadata]);
 
-    const formRef = useRef<HTMLFormElement>(null);
+    useEffect(() => {
+      return () => {
+        setSelectedResource(null);
+      };
+    }, []);
+
+    // const formRef = useRef<HTMLFormElement>(null);
     return (
       <div className="flex flex-col mx-auto sm:w-1/2 h-full w-full items-center  justify-between">
-        <div className="w-full ">
+        <div className="w-full">
           {messages && messages.length > 0 && (
             <ChatMessages
               messages={messages}
@@ -135,6 +151,7 @@ const ChatInterface = memo(
           type="file"
           aria-label="file_upload"
           className="hidden"
+          multiple
           onChange={(e) => {
             handleFileupload(e);
           }}
@@ -146,12 +163,19 @@ const ChatInterface = memo(
             if (messages.length == 0 || messages.length == 1) {
               await generateTitleFn();
             }
+            const prompt =
+              file?.url || selectedResource?.url
+                ? `attachment:${file?.url ?? selectedResource?.url}. input: ${input}`
+                : input;
             sendMessage(
-              { text: input },
+              {
+                text: prompt,
+              },
               {
                 body: {
                   reasoningEffort,
                   chatId,
+                  file: file?.url ?? selectedResource?.url,
                 },
               },
             );
@@ -237,12 +261,28 @@ const ChatInterface = memo(
                     <div className="relative rounded-xl border">
                       {(file?.format.includes("pdf") ??
                       selectedResource?.format.includes("pdf")) ? (
-                        <Image
-                          src={"/pdf.png"}
-                          width={80}
-                          height={80}
-                          alt="uploaded image"
-                        />
+                        <div className="flex p-2 gap-1">
+                          <div>
+                            <Image
+                              src={"/pdf.png"}
+                              width={40}
+                              height={40}
+                              alt="uploaded image"
+                            />
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="font-bold">
+                              {(file?.name ?? selectedResource?.display_name) +
+                                "." +
+                                (file?.format ?? selectedResource?.format)}
+                            </span>
+
+                            <span className="">
+                              {file?.format.toUpperCase() ??
+                                selectedResource?.format.toUpperCase()}
+                            </span>
+                          </div>
+                        </div>
                       ) : (
                         <Image
                           src={file?.url ?? selectedResource?.secure_url ?? ""}
