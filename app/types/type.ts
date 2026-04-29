@@ -6,18 +6,14 @@ export type ChatAreaType = {
   role: "user" | "assistant";
   message: string;
 };
-export type FileType = {
+export type TFileType = {
   public_id?: string;
   name?: string;
   url: string;
   format: string;
 };
-export type RequestPayload = {
-  prompt: string;
-  url?: string;
-};
 
-export type GalleryItem = {
+export type TGalleryItem = {
   asset_folder: string;
   asset_id: string;
   bytes: number;
@@ -34,25 +30,34 @@ export type GalleryItem = {
   width: number;
 };
 
-export type MessageMetadataT = {
+export type TMessageMetadata = {
   totalTokens?: string;
   remainTokens?: string;
   remainRequests?: string;
   status: string;
-  reasoning?: string;
   start?: number;
   end?: number;
   reasoning_status?: string;
+  rateLimit?: any;
 };
-export type MyUIMessage = UIMessage<MessageMetadataT>;
+export type TMyUIMessage = UIMessage<TMessageMetadata>;
 
 //settings
-export type ReasoningEffort = {
-  effort: "low" | "medium" | "high" | "none";
+export type TReasoningEffort = {
+  effort?: "low" | "medium" | "high" | "none";
+  contextWindow?: 500 | 1000 | 2000 | 5000;
+  model:
+    // | "llama-3.1-8b-instant"
+    // | "meta-llama/llama-4-scout-17b-16e-instruct"
+    | "openai/gpt-oss-20b";
 };
 
-export type ChatsListType = {
+export type TChatsList = {
   id?: string;
   title: string;
   chat_id: string;
+};
+
+export type TSettings = {
+  agentSettings: Record<string, string>;
 };

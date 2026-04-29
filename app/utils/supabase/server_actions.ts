@@ -1,5 +1,5 @@
 "use server";
-import { MessageMetadataT, MyUIMessage } from "@/app/types/type";
+import { TMessageMetadata, TMyUIMessage } from "@/app/types/type";
 import { createClient as c } from "./client";
 import { createClient as s } from "./server";
 export const saveChatClient = async ({
@@ -10,7 +10,7 @@ export const saveChatClient = async ({
 }: {
   table: string;
   role: "user" | "assistant";
-  metadata?: MessageMetadataT;
+  metadata?: TMessageMetadata;
   id: string;
 }) => {
   const supabase = c();
@@ -38,7 +38,7 @@ export const saveMessagePartClient = async ({
 }: {
   table: string;
   role: "user" | "assistant";
-  metadata?: MessageMetadataT;
+  metadata?: TMessageMetadata;
   id: string;
 }) => {
   const supabase = c();
@@ -63,7 +63,7 @@ export const upsertMessage = async ({
   chatId,
 }: {
   chatId: string;
-  messages: MyUIMessage[];
+  messages: TMyUIMessage[];
 }) => {
   const supabase = c();
   const { error } = await supabase.from("messages").upsert(

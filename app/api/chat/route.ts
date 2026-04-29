@@ -1,22 +1,25 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { streamText, UIMessage, convertToModelMessages, stepCountIs } from "ai";
 import { groq } from "@ai-sdk/groq";
 import { tools } from "@/app/helpers/tools";
 import { deltaTime } from "@/app/helpers/format";
-import { ReasoningEffort } from "@/app/types/type";
+import { TReasoningEffort } from "@/app/types/type";
 
 export async function POST(req: Request) {
   try {
     const {
       messages,
-      reasoningEffort,
+      settings,
     }: {
       messages: UIMessage[];
-      reasoningEffort: ReasoningEffort;
+      settings: TReasoningEffort;
     } = await req.json();
 
+    let responseHeaders: any;
     const result = streamText({
-      model: groq("openai/gpt-oss-20b"),
-      maxOutputTokens: 300,
+      // model: groq("openai/gpt-oss-20b"),
+      model: groq(settings.model),
+      // maxOutputTokens: 300,
       // model: groq("llama-3.3-70b-versatile"),
       system: `You are a helpful assistant. use tool if user ask only. `,
       tools,
@@ -24,18 +27,20 @@ export async function POST(req: Request) {
 
       providerOptions: {
         groq: {
-          reasoningFormat:
-            reasoningEffort?.effort === "none" ? "hidden" : "parsed",
-          ...(reasoningEffort?.effort !== "none" && {
-            reasoningEffort: reasoningEffort?.effort,
+          reasoningFormat: settings?.effort === "none" ? "hidden" : "parsed",
+          ...(settings?.effort !== "none" && {
+            settings: settings?.effort,
           }),
         },
       },
-      timeout: 20000,
+      // timeout: 20000,
       // temperature: 0,
       // toolChoice: "auto",
+      onFinish: (event) => {
+        responseHeaders = event.response?.headers;
+      },
       messages: await convertToModelMessages(messages),
-      stopWhen: stepCountIs(2),
+      stopWhen: stepCountIs(3),
     });
 
     let reasoningStart: number | null = null;
@@ -46,6 +51,7 @@ export async function POST(req: Request) {
             status: "Requesting...",
           };
         }
+
         if (part.type === "reasoning-start") {
           reasoningStart = Date.now();
           return {
@@ -96,6 +102,18 @@ export async function POST(req: Request) {
           return {
             status: "",
             totalTokens: totalTokens,
+            rateLimit: {
+              remainingRequests: responseHeaders?.get(
+                "x-ratelimit-remaining-requests",
+              ),
+              remainingTokens: responseHeaders?.get(
+                "x-ratelimit-remaining-tokens",
+              ),
+              limitRequests: responseHeaders?.get("x-ratelimit-limit-requests"),
+              limitTokens: responseHeaders?.get("x-ratelimit-limit-tokens"),
+              resetRequests: responseHeaders?.get("x-ratelimit-reset-requests"),
+              resetTokens: responseHeaders?.get("x-ratelimit-reset-tokens"),
+            },
           };
         }
       },

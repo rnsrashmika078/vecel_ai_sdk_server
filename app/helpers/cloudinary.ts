@@ -1,9 +1,9 @@
-import { FileType } from "../types/type";
+import { TFileType } from "../types/type";
 import { apiFetch } from "./api_fetch";
 
 export async function CloudinaryUpload(
   file: File | null = null
-): Promise<FileType | null> {
+): Promise<TFileType | null> {
   if (file != null) {
     const data = new FormData();
     data.append("file", file);

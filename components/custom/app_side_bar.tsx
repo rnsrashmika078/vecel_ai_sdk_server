@@ -77,33 +77,37 @@ export const AppSidebar = memo(() => {
         <SidebarGroup>
           <SidebarGroupLabel>Recent</SidebarGroupLabel>
           <SidebarGroupContent className="flex flex-col gap-1 custom-scrollbar h-100">
-            {chats.map((c) => (
-              <div
-                key={c.chat_id}
-                onClick={() => {
-                  router.push(`/chat/${c.chat_id}`);
-                  setActiveChat(c.chat_id);
-                }}
-                onMouseEnter={() => setVisibility(c.chat_id)}
-                onMouseLeave={() => setVisibility(null)}
-                className={`p-2 flex justify-between items-center rounded-md hover:text-muted-foreground text-sm ${c.chat_id === activeChat ? "bg-accent" : "bg-transparent"}`}
-              >
-                {c.title}
-                <MdOutlineDeleteOutline
-                  size={18}
-                  onClick={async (e) => {
-                    e.stopPropagation();
-                    const delId = c.chat_id;
-                    await deleteChat({ chat_id: delId, table: "chats" });
-                    setChats((prev) => prev.filter((c) => c.chat_id != delId));
-                    if (activeChat === delId) {
-                      router.push("/chat/");
-                    }
+            {chats &&
+              chats.length > 0 &&
+              chats.map((c) => (
+                <div
+                  key={c.chat_id}
+                  onClick={() => {
+                    router.push(`/chat/${c.chat_id}`);
+                    setActiveChat(c.chat_id);
                   }}
-                  className={`${visibility === c.chat_id ? "block" : "hidden"}`}
-                />
-              </div>
-            ))}
+                  onMouseEnter={() => setVisibility(c.chat_id)}
+                  onMouseLeave={() => setVisibility(null)}
+                  className={`p-2 flex justify-between items-center rounded-md hover:text-muted-foreground text-sm ${c.chat_id === activeChat ? "bg-accent" : "bg-transparent"}`}
+                >
+                  {c.title}
+                  <MdOutlineDeleteOutline
+                    size={18}
+                    onClick={async (e) => {
+                      e.stopPropagation();
+                      const delId = c.chat_id;
+                      await deleteChat({ chat_id: delId, table: "chats" });
+                      setChats((prev) =>
+                        prev.filter((c) => c.chat_id != delId),
+                      );
+                      if (activeChat === delId) {
+                        router.push("/chat/");
+                      }
+                    }}
+                    className={`${visibility === c.chat_id ? "block" : "hidden"}`}
+                  />
+                </div>
+              ))}
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>

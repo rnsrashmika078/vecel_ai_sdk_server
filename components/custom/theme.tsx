@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -10,8 +10,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { TSettings } from "@/app/types/type";
 
-const Theme = () => {
+const Theme = memo(() => {
   const [dark, setDark] = useState(false);
 
   useEffect(() => {
@@ -58,6 +59,7 @@ const Theme = () => {
       </div>
     </DropdownMenu>
   );
-};
+});
+Theme.displayName = "Theme";
 
 export default Theme;

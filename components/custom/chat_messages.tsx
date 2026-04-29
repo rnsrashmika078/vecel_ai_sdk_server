@@ -7,13 +7,15 @@ import { ToolRenderer } from "./tool_renderer";
 import { memo } from "react";
 import { GiAbstract021 } from "react-icons/gi";
 import { LuRefreshCcw } from "react-icons/lu";
-import { MyUIMessage } from "@/app/types/type";
+import { TMyUIMessage } from "@/app/types/type";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import PdfParse from "pdf-parse";
+import { FaFilePdf } from "react-icons/fa";
 const ChatMessages = memo(
   ({
     messages,
@@ -21,7 +23,7 @@ const ChatMessages = memo(
     status,
   }: {
     status: ChatStatus;
-    messages: MyUIMessage[];
+    messages: TMyUIMessage[];
     regenerate: () => Promise<void>;
   }) => {
     return (
@@ -109,14 +111,20 @@ const ChatMessages = memo(
                           ),
 
                           a: ({ href, children }) => (
-                            <a
-                              href={href}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-blue-400 underline hover:text-blue-300"
-                            >
-                              {children}
-                            </a>
+                            // <div
+                            //   // href={href}
+                            //   // target="_blank"
+                            //   // rel="noopener noreferrer"
+                            //   className="text-red-400 underline hover:text-blue-300"
+                            // >
+                            //   {/* {children} */}
+                            <FaFilePdf
+                              // onClick={href}
+                              size={40}
+                              color="red"
+                              className="border p-1 border-gray-900 rounded-sm"
+                            />
+                            // </div>
                           ),
 
                           ul: ({ children }) => (
@@ -208,6 +216,11 @@ const ChatMessages = memo(
                   {message?.metadata?.totalTokens} tokens
                 </span>
               )}
+              {/* {message?.metadata?.totalTokens && contextWindow && (
+                <span className="text-xs text-red-500 font-bold border p-1 rounded-md border-gray-900 bg-gray-800">
+                  {contextWindow} Content Window
+                </span>
+              )} */}
             </div>
           </div>
         ))}

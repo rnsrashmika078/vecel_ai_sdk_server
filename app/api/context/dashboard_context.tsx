@@ -1,6 +1,6 @@
 "use client";
-import { ChatsListType, GalleryItem, ReasoningEffort } from "@/app/types/type";
-import { createContext, useContext, useState } from "react";
+import { TChatsList, TGalleryItem, TReasoningEffort } from "@/app/types/type";
+import { createContext, useContext, useMemo, useState } from "react";
 
 export type DashboardContextType = {
   galleryOpen: boolean;
@@ -8,17 +8,19 @@ export type DashboardContextType = {
   settingOpen: boolean;
   setSettingOpen: React.Dispatch<React.SetStateAction<boolean>>;
 
-  selectedResource: GalleryItem | null;
-  setSelectedResource: React.Dispatch<React.SetStateAction<GalleryItem | null>>;
+  selectedResource: TGalleryItem | null;
+  setSelectedResource: React.Dispatch<
+    React.SetStateAction<TGalleryItem | null>
+  >;
 
-  chats: ChatsListType[];
-  setChats: React.Dispatch<React.SetStateAction<ChatsListType[]>>;
+  chats: TChatsList[];
+  setChats: React.Dispatch<React.SetStateAction<TChatsList[]>>;
 
   activeChat: string;
   setActiveChat: React.Dispatch<React.SetStateAction<string>>;
 
-  reasoningEffort: ReasoningEffort;
-  setReasoningEffort: React.Dispatch<React.SetStateAction<ReasoningEffort>>;
+  TReasoningEffort: TReasoningEffort; // naming must change
+  setTReasoningEffort: React.Dispatch<React.SetStateAction<TReasoningEffort>>; // naming must change
 };
 const DashboardContext = createContext<DashboardContextType | null>(null);
 
@@ -30,34 +32,42 @@ export const DashboardWrapperContext = ({
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [settingOpen, setSettingOpen] = useState(false);
   const [activeChat, setActiveChat] = useState("");
-  const [reasoningEffort, setReasoningEffort] = useState<ReasoningEffort>({
+  const [TReasoningEffort, setTReasoningEffort] = useState<TReasoningEffort>({
     effort: "medium",
+    contextWindow: 1000,
+    model: "openai/gpt-oss-20b",
   });
-  const [selectedResource, setSelectedResource] = useState<GalleryItem | null>(
+  //naming must change
+  const [selectedResource, setSelectedResource] = useState<TGalleryItem | null>(
     null,
   );
-  const [chats, setChats] = useState<ChatsListType[]>([]);
-
+  const [chats, setChats] = useState<TChatsList[]>([]);
+  const value = useMemo(
+    () => ({
+      galleryOpen,
+      setGalleryOpen,
+      selectedResource,
+      setSelectedResource,
+      settingOpen,
+      setSettingOpen,
+      chats,
+      setChats,
+      TReasoningEffort, // naming must change
+      setTReasoningEffort, // naming must change
+      activeChat,
+      setActiveChat,
+    }),
+    [
+      galleryOpen,
+      selectedResource,
+      settingOpen,
+      chats,
+      TReasoningEffort, // naming must change
+      activeChat,
+    ],
+  );
   return (
-    <DashboardContext.Provider
-      value={{
-        galleryOpen,
-        setGalleryOpen,
-        selectedResource,
-        setSelectedResource,
-        settingOpen,
-        setSettingOpen,
-
-        chats,
-        setChats,
-
-        reasoningEffort,
-        setReasoningEffort,
-
-        activeChat,
-        setActiveChat,
-      }}
-    >
+    <DashboardContext.Provider value={value}>
       {children}
     </DashboardContext.Provider>
   );

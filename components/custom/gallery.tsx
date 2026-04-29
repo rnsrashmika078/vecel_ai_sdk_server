@@ -10,7 +10,7 @@ import {
   ComboboxItem,
   ComboboxList,
 } from "@/components/ui/combobox";
-import { GalleryItem } from "@/app/types/type";
+import { TGalleryItem } from "@/app/types/type";
 import { useDashboardContext } from "@/app/api/context/dashboard_context";
 import { AnimatePresence, motion } from "framer-motion";
 import Spinner from "./spinner";
@@ -18,7 +18,7 @@ const Gallery = memo(() => {
   console.log("render: Gallery Component");
   const { galleryOpen, setGalleryOpen, setSelectedResource } =
     useDashboardContext();
-  const [store, setStore] = useState<GalleryItem[]>([]);
+  const [store, setStore] = useState<TGalleryItem[]>([]);
   const [selection, setSelection] = useState<string>("Images");
   const [loading, setLoading] = useState<boolean>(false);
   useEffect(() => {

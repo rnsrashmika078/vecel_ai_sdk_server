@@ -8,7 +8,7 @@ import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { ArrowRight } from "lucide-react";
 import { useState } from "react";
-import { MyUIMessage } from "./types/type";
+import { TMyUIMessage } from "./types/type";
 import TextareaAutosize from "react-textarea-autosize";
 import ReactMarkdown from "react-markdown";
 import { BiAddToQueue } from "react-icons/bi";
@@ -37,7 +37,7 @@ const MainPage = () => {
     regenerate,
     error,
     id,
-  } = useChat<MyUIMessage>({
+  } = useChat<TMyUIMessage>({
     experimental_throttle: 50,
     transport: new DefaultChatTransport({
       api: `/api/chat`,

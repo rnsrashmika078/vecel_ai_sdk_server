@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/input-group";
 import TextareaAutosize from "react-textarea-autosize";
 import { CloudinaryUpload } from "@/app/helpers/cloudinary";
-import { FileType, MyUIMessage } from "@/app/types/type";
+import { TFileType, TMyUIMessage } from "@/app/types/type";
 import { ArrowRight, Plus } from "lucide-react";
 import Spinner from "./spinner";
 const ChatMessages = dynamic(() => import("./chat_messages"), {
@@ -35,38 +35,39 @@ const ChatInterface = memo(
     initialMessages,
     chatId,
   }: {
-    initialMessages: MyUIMessage[];
+    initialMessages: TMyUIMessage[];
     chatId: string;
   }) => {
     console.log("Render: ChatInterface Component");
-
     const [input, setInput] = useState("");
-
     const [loading, setLoading] = useState<boolean>(false);
-    const [file, setFile] = useState<FileType | null>(null);
-    // const [blob, setBlob] = useState<FileList | null>(null);
-
+    const [file, setFile] = useState<TFileType | null>(null);
+    const [files, setFiles] = useState<any>();
     const inputRef = useRef<HTMLInputElement | null>(null);
     const {
       setGalleryOpen,
       selectedResource,
       setSelectedResource,
       setChats,
-      reasoningEffort,
+      TReasoningEffort,
+      setTReasoningEffort,
     } = useDashboardContext();
+
     const {
       messages,
       sendMessage,
+      setMessages,
       stop,
       status,
       // resumeStream,
       regenerate,
       // error,
       // id,
-    } = useChat<MyUIMessage>({
+    } = useChat<TMyUIMessage>({
       id: chatId,
       experimental_throttle: 50,
       messages: initialMessages,
+
       transport: new DefaultChatTransport({
         api: `/api/chat`,
       }),
@@ -80,14 +81,13 @@ const ChatInterface = memo(
 
     const handleFileupload = async (e: ChangeEvent<HTMLInputElement>) => {
       const file: File | undefined = e.target.files?.[0];
-      // const multipleFile = e.target.files;
+      // const files: File[] | undefined = e.target.files;
 
-      // if (file && multipleFile) {
       if (file) {
-        // setBlob(multipleFile);
         setLoading(true);
         const payload = await CloudinaryUpload(file);
         setFile(payload);
+        setFiles(payload);
         e.target.value = "";
         setLoading(false);
       }
@@ -119,22 +119,27 @@ const ChatInterface = memo(
     }, [messages]);
 
     useEffect(() => {
-      if (status === "ready") {
-        if (!metadata) return;
-        const supabaseAction = async () => {
-          await upsertMessage({ messages: messages, chatId }); // name must change
-        };
-        supabaseAction();
-      }
+      if (status !== "ready") return;
+      if (!metadata) return;
+      const supabaseAction = async () => {
+        await upsertMessage({ messages: messages, chatId });
+      };
+      supabaseAction();
     }, [status, chatId, metadata]);
 
     useEffect(() => {
+      if (typeof window === "undefined") return;
+      const settings = localStorage.getItem("settings");
+      if (settings === null) return;
+      const parsed = JSON.parse(settings);
+      setTReasoningEffort(parsed);
       return () => {
         setSelectedResource(null);
       };
     }, []);
 
     // const formRef = useRef<HTMLFormElement>(null);
+
     return (
       <div className="flex flex-col mx-auto sm:w-1/2 h-full w-full items-center  justify-between">
         <div className="w-full">
@@ -165,15 +170,16 @@ const ChatInterface = memo(
             }
             const prompt =
               file?.url || selectedResource?.url
-                ? `attachment:${file?.url ?? selectedResource?.url}. input: ${input}`
+                ? `${file?.url ?? selectedResource?.url}\n${input}`
                 : input;
             sendMessage(
               {
                 text: prompt,
+                files: files,
               },
               {
                 body: {
-                  reasoningEffort,
+                  settings: TReasoningEffort,
                   chatId,
                   file: file?.url ?? selectedResource?.url,
                 },

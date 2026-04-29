@@ -1,11 +1,11 @@
 import { BiDownload } from "react-icons/bi";
 import { FaFileLines } from "react-icons/fa6";
 import { MdOpenInNew } from "react-icons/md";
-type GenFileType = {
+type GenTFileType = {
   name?: string;
   content?: string;
 };
-const GenFile = ({ name = "Ozone" }: GenFileType) => {
+const GenFile = ({ name = "Ozone" }: GenTFileType) => {
   const link = `/files/${name}`;
   return (
     <div className="p-5 bg-black border border-gray-900 w-full flex rounded-xl mb-5 justify-between">
