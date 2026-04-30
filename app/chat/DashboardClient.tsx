@@ -2,11 +2,11 @@
 import { ReactNode } from "react";
 import { useDashboardContext } from "../api/context/dashboard_context";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/custom/app_side_bar";
 import dynamic from "next/dynamic";
 import { AnimatePresence } from "framer-motion";
 const Settings = dynamic(() => import("@/components/custom/settings/settings"));
 const Gallery = dynamic(() => import("@/components/custom/gallery"));
+const AppSidebar = dynamic(() => import("@/components/custom/app_side_bar"));
 
 const DashboardClient = ({ children }: { children: ReactNode }) => {
   const { settingOpen, galleryOpen } = useDashboardContext();

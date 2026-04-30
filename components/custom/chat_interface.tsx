@@ -2,7 +2,7 @@
 "use client";
 import { useChat } from "@ai-sdk/react";
 import { ChangeEvent, memo, useEffect, useMemo, useRef, useState } from "react";
-import { DefaultChatTransport } from "ai";
+import { DefaultChatTransport, pruneMessages } from "ai";
 import {
   InputGroup,
   InputGroupAddon,

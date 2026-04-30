@@ -18,7 +18,7 @@ import { Edit, Plus, Settings } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { memo, useEffect, useState } from "react";
 
-export const AppSidebar = memo(() => {
+const AppSidebar = memo(() => {
   console.log("AppSidebar Component Rendered! ");
   const router = useRouter();
   const { setSettingOpen, chats, setChats, activeChat, setActiveChat } =
@@ -118,3 +118,5 @@ export const AppSidebar = memo(() => {
 });
 
 AppSidebar.displayName = "AppSidebar";
+
+export default AppSidebar;

@@ -1,5 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { streamText, UIMessage, convertToModelMessages, stepCountIs } from "ai";
+import {
+  streamText,
+  UIMessage,
+  convertToModelMessages,
+  stepCountIs,
+  pruneMessages,
+} from "ai";
 import { groq } from "@ai-sdk/groq";
 import { tools } from "@/app/helpers/tools";
 import { deltaTime } from "@/app/helpers/format";
@@ -14,6 +20,15 @@ export async function POST(req: Request) {
       messages: UIMessage[];
       settings: TReasoningEffort;
     } = await req.json();
+
+    const modelMessages = await convertToModelMessages(messages);
+    const pruned = pruneMessages({
+      messages: modelMessages,
+      reasoning: "all",
+
+      // Remove all reasoning parts
+      // toolCalls: "before-last-message", // Remove tool calls except those in the last message
+    });
 
     let responseHeaders: any;
     const result = streamText({
@@ -39,7 +54,7 @@ export async function POST(req: Request) {
       onFinish: (event) => {
         responseHeaders = event.response?.headers;
       },
-      messages: await convertToModelMessages(messages),
+      messages: pruned,
       stopWhen: stepCountIs(3),
     });
 
