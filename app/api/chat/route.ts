@@ -32,8 +32,8 @@ export async function POST(req: Request) {
 
     let responseHeaders: any;
     const result = streamText({
-      // model: groq("openai/gpt-oss-20b"),
-      model: groq(settings.model),
+      model: groq("openai/gpt-oss-20b"),
+      // model: groq(settings?.model),
       // maxOutputTokens: 300,
       // model: groq("llama-3.3-70b-versatile"),
       system: `You are a helpful assistant. use tool if user ask only. `,
@@ -55,7 +55,7 @@ export async function POST(req: Request) {
         responseHeaders = event.response?.headers;
       },
       messages: pruned,
-      stopWhen: stepCountIs(3),
+      stopWhen: stepCountIs(5),
     });
 
     let reasoningStart: number | null = null;

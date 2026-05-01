@@ -112,7 +112,7 @@ export const webSearchTool = createTool({
 });
 export const ragTool = createTool({
   description:
-    "provide answer based only on pdf content.dont use webSearch tool at all",
+    "provide answer based only on pdf content.Only extract if explicitly found in retrieved text",
   inputSchema: z.object({
     url: z.string(),
     input: z.string(),
@@ -120,7 +120,7 @@ export const ragTool = createTool({
   execute: async ({ url, input }) => {
     const result = await storeEmbeddings({ url });
     const result_of_retrive = await retriveEmbeddings({ input, url });
-    return result_of_retrive;
+    return "relavant chunk: " + JSON.stringify(result_of_retrive);
   },
 });
 

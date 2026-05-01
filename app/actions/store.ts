@@ -30,7 +30,10 @@ export async function storeEmbeddings({ url }: { url: string }) {
       return NextResponse.json({ success: false, error: "No text provided" });
 
     const chunks = await splitter.splitText(data);
+    console.log(`chunks : ${chunks}`);
     const vectors = await embeddings.embedDocuments(chunks);
+    console.log(`vectors : ${vectors}`);
+
     const ids = chunks.map(() => crypto.randomUUID());
     await (
       await collection

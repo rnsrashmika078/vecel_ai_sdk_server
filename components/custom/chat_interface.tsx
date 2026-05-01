@@ -29,6 +29,7 @@ import { generateTitle } from "@/app/helpers/tool_helpers";
 import dynamic from "next/dynamic";
 import { createClient } from "@/app/utils/supabase/client";
 import { upsertMessage } from "@/app/utils/supabase/server_actions";
+import { Metadata } from "next";
 
 const ChatInterface = memo(
   ({
@@ -78,6 +79,8 @@ const ChatInterface = memo(
         console.log("Received data part from server:", data);
       },
     });
+    // metadata
+    
 
     const handleFileupload = async (e: ChangeEvent<HTMLInputElement>) => {
       const file: File | undefined = e.target.files?.[0];
@@ -175,7 +178,7 @@ const ChatInterface = memo(
             sendMessage(
               {
                 text: prompt,
-                files: files,
+                // files: files,
               },
               {
                 body: {
