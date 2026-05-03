@@ -1,18 +1,26 @@
 import { z } from "zod";
-import { tool as createTool } from "ai";
+import { tool as createTool, tool } from "ai";
 import { createFile } from "./file_operation";
 import { storeEmbeddings } from "../actions/store";
 import { retriveEmbeddings } from "../actions/retrive";
 import { requestWeatherAPI } from "./tool_helpers";
 import { groq } from "../utils/groqClient";
 
-export const weatherTool = createTool({
+///client side tools
+export const askForConfirmation = createTool({
+  description: "Ask the user for confirmation.",
+  inputSchema: z.object({
+    message: z.string().describe("The message to ask for confirmation."),
+  }),
+});
+
+const weatherTool = tool({
   description: "weather for user given location",
   inputSchema: z.object({
     location: z.string().describe(""),
   }),
-  execute: async function ({ location }) {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+  needsApproval: true,
+  execute: async ({ location }) => {
     const result = await requestWeatherAPI(location);
     return {
       weather: result.condition.text,
@@ -23,15 +31,7 @@ export const weatherTool = createTool({
     };
   },
 });
-export const chatTitle = createTool({
-  description: "title for chat on chat beginning",
-  inputSchema: z.object({
-    title: z.string(),
-  }),
-  execute: async ({ title }) => {
-    return `${title}`;
-  },
-});
+
 // create a file ( just for testing )
 export const createFileTool = createTool({
   description: "create a file",
@@ -86,6 +86,7 @@ export const webSearchTool = createTool({
   inputSchema: z.object({
     user_prompt: z.string().describe("prompt"),
   }),
+  // needsApproval: true,
   execute: async ({ user_prompt }) => {
     const groqResult = await groq.chat.completions.create({
       messages: [
@@ -96,9 +97,11 @@ export const webSearchTool = createTool({
       ],
       model: "groq/compound-mini",
       temperature: 1,
-      max_completion_tokens: 50,
+      max_completion_tokens: 500,
       top_p: 1,
       stream: false,
+      // reasoning_effort:"none",
+
       stop: null,
       compound_custom: {
         tools: {
@@ -129,7 +132,7 @@ export const tools = {
   createFileTool,
   createChartTool,
   imageRecognitionTool,
-  // webSearchTool,
+  webSearchTool,
   ragTool,
-  // chatTitle,
+  askForConfirmation,
 };

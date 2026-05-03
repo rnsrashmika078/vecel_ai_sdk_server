@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   streamText,
   UIMessage,
@@ -10,6 +9,7 @@ import { groq } from "@ai-sdk/groq";
 import { tools } from "@/app/helpers/tools";
 import { deltaTime } from "@/app/helpers/format";
 import { TReasoningEffort } from "@/app/types/type";
+import { allTools } from "../experimental_chat/route";
 
 export async function POST(req: Request) {
   try {
@@ -25,9 +25,7 @@ export async function POST(req: Request) {
     const pruned = pruneMessages({
       messages: modelMessages,
       reasoning: "all",
-
-      // Remove all reasoning parts
-      // toolCalls: "before-last-message", // Remove tool calls except those in the last message
+      // toolCalls: "all",
     });
 
     let responseHeaders: any;
@@ -38,8 +36,6 @@ export async function POST(req: Request) {
       // model: groq("llama-3.3-70b-versatile"),
       system: `You are a helpful assistant. use tool if user ask only. `,
       tools,
-      // activeTools
-
       providerOptions: {
         groq: {
           reasoningFormat: settings?.effort === "none" ? "hidden" : "parsed",
@@ -50,10 +46,6 @@ export async function POST(req: Request) {
       },
       // timeout: 20000,
       // temperature: 0,
-      // toolChoice: "auto",
-      onFinish: (event) => {
-        responseHeaders = event.response?.headers;
-      },
       messages: pruned,
       stopWhen: stepCountIs(5),
     });

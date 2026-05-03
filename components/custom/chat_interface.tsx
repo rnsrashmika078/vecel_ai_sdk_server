@@ -2,7 +2,12 @@
 "use client";
 import { useChat } from "@ai-sdk/react";
 import { ChangeEvent, memo, useEffect, useMemo, useRef, useState } from "react";
-import { DefaultChatTransport, pruneMessages } from "ai";
+import {
+  DefaultChatTransport,
+  lastAssistantMessageIsCompleteWithApprovalResponses,
+  lastAssistantMessageIsCompleteWithToolCalls,
+  pruneMessages,
+} from "ai";
 import {
   InputGroup,
   InputGroupAddon,
@@ -30,7 +35,6 @@ import dynamic from "next/dynamic";
 import { createClient } from "@/app/utils/supabase/client";
 import { upsertMessage } from "@/app/utils/supabase/server_actions";
 import { Metadata } from "next";
-
 const ChatInterface = memo(
   ({
     initialMessages,
@@ -59,19 +63,45 @@ const ChatInterface = memo(
       sendMessage,
       setMessages,
       stop,
+      addToolApprovalResponse,
       status,
-      // resumeStream,
       regenerate,
+      addToolOutput,
       // error,
       // id,
     } = useChat<TMyUIMessage>({
       id: chatId,
       experimental_throttle: 50,
       messages: initialMessages,
-
       transport: new DefaultChatTransport({
         api: `/api/chat`,
       }),
+      sendAutomaticallyWhen:
+        lastAssistantMessageIsCompleteWithApprovalResponses,
+
+      // run client-side tools that are automatically executed:
+      // async onToolCall({ toolCall }) {
+      //   // Check if it's a dynamic tool first for proper type narrowing
+      //   if (toolCall.dynamic) {
+      //     return;
+      //   }
+
+      //   if (toolCall.toolName === "getLocation") {
+      //     const cities = [
+      //       "New York",
+      //       "Los Angeles",
+      //       "Chicago",
+      //       "San Francisco",
+      //     ];
+
+      //     // No await - avoids potential deadlocks
+      //     addToolOutput({
+      //       tool: "getLocation",
+      //       toolCallId: toolCall.toolCallId,
+      //       output: cities[Math.floor(Math.random() * cities.length)],
+      //     });
+      //   }
+      // },
       onError: (error) => {
         console.error("An error occurred:", error);
       },
@@ -80,7 +110,6 @@ const ChatInterface = memo(
       },
     });
     // metadata
-    
 
     const handleFileupload = async (e: ChangeEvent<HTMLInputElement>) => {
       const file: File | undefined = e.target.files?.[0];
@@ -148,6 +177,7 @@ const ChatInterface = memo(
         <div className="w-full">
           {messages && messages.length > 0 && (
             <ChatMessages
+              addToolApprovalResponse={addToolApprovalResponse}
               messages={messages}
               regenerate={regenerate}
               status={status}

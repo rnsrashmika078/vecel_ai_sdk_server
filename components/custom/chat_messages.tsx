@@ -1,4 +1,8 @@
-import { ChatStatus } from "ai";
+import {
+  ChatAddToolApproveResponseFunction,
+  ChatRequestOptions,
+  ChatStatus,
+} from "ai";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -7,22 +11,23 @@ import { ToolRenderer } from "./tool_renderer";
 import { memo } from "react";
 import { GiAbstract021 } from "react-icons/gi";
 import { LuRefreshCcw } from "react-icons/lu";
-import { TMyUIMessage } from "@/app/types/type";
+import { TAddToOutput, TMyUIMessage } from "@/app/types/type";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import PdfParse from "pdf-parse";
 import { FaFilePdf } from "react-icons/fa";
 const ChatMessages = memo(
   ({
     messages,
     regenerate,
+    addToolApprovalResponse,
     status,
   }: {
     status: ChatStatus;
+    addToolApprovalResponse: ChatAddToolApproveResponseFunction;
     messages: TMyUIMessage[];
     regenerate: () => Promise<void>;
   }) => {
@@ -50,6 +55,12 @@ const ChatMessages = memo(
               )}
 
               {message?.parts?.map((part, index) => {
+                // const reasoningText = message.parts
+                //   ?.filter((p) => p.type === "reasoning")
+                //   .map((p) => p.text)
+                //   .join("\n");
+
+                // console.log("reasoningText", reasoningText);
                 if (part?.type === "text") {
                   return (
                     <div key={index}>
@@ -92,24 +103,25 @@ const ChatMessages = memo(
                             </div>
                           ),
                           table: ({ children }) => (
-                            <table className=" mt-2">{children}</table>
+                            <table border={1} className=" mt-5 mb-5">
+                              {children}
+                            </table>
                           ),
                           th: ({ children }) => (
-                            <th className="border px-0 md:p-3 mt-3">
+                            <th className="border-2 border-blue-500 px-0 md:p-3 ">
                               {children}
                             </th>
                           ),
                           tr: ({ children }) => (
-                            <tr className="border px-0 md:p-3mt-3">
+                            <tr className="border-2 border-blue-500  px-0 md:p-3">
                               {children}
                             </tr>
                           ),
                           td: ({ children }) => (
-                            <td className="border px-0 md:p-3 mt-3">
+                            <td className=" border-2 border-blue-500 px-0 md:p-3">
                               {children}
                             </td>
                           ),
-
                           a: ({ href, children }) => (
                             // <div
                             //   // href={href}
@@ -178,6 +190,7 @@ const ChatMessages = memo(
                   );
                 }
 
+                
                 if (part?.type === "reasoning") {
                   return (
                     <div
@@ -204,7 +217,12 @@ const ChatMessages = memo(
                 }
                 if (part?.type.startsWith("tool")) {
                   return (
-                    <ToolRenderer part={part} status={status} key={index} />
+                    <ToolRenderer
+                      part={part}
+                      status={status}
+                      key={index}
+                      addToolApprovalResponse={addToolApprovalResponse}
+                    />
                   );
                 }
               })}

@@ -46,10 +46,9 @@ export type TMyUIMessage = UIMessage<TMessageMetadata>;
 export type TReasoningEffort = {
   effort?: "low" | "medium" | "high" | "none";
   contextWindow?: 500 | 1000 | 2000 | 5000;
-  model:
-    // | "llama-3.1-8b-instant"
-    // | "meta-llama/llama-4-scout-17b-16e-instruct"
-    | "openai/gpt-oss-20b";
+  model: // | "llama-3.1-8b-instant"
+  // | "meta-llama/llama-4-scout-17b-16e-instruct"
+  "openai/gpt-oss-20b";
 };
 
 export type TChatsList = {
@@ -61,3 +60,25 @@ export type TChatsList = {
 export type TSettings = {
   agentSettings: Record<string, string>;
 };
+
+export type TAddToOutput = <TOOL extends string>({
+  state,
+  tool,
+  toolCallId,
+  output,
+  errorText,
+}:
+  | {
+      state?: "output-available";
+      tool: TOOL;
+      toolCallId: string;
+      output: unknown;
+      errorText?: never;
+    }
+  | {
+      state: "output-error";
+      tool: TOOL;
+      toolCallId: string;
+      output?: never;
+      errorText: string;
+    }) => Promise<void>;

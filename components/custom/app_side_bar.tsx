@@ -81,7 +81,7 @@ const AppSidebar = memo(() => {
               chats.length > 0 &&
               chats.map((c) => (
                 <div
-                  key={c.chat_id}
+                  key={`c.${c.chat_id}-${c.title}`}
                   onClick={() => {
                     router.push(`/chat/${c.chat_id}`);
                     setActiveChat(c.chat_id);
