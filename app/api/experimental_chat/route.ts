@@ -3,7 +3,7 @@ import { TReasoningEffort } from "@/app/types/type";
 import { groq } from "@ai-sdk/groq";
 import { convertToModelMessages, streamText, tool, UIMessage } from "ai";
 import { z } from "zod";
-import { tool as createTool } from "ai";
+
 
 export async function POST(req: Request) {
   const {

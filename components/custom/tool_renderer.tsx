@@ -30,12 +30,20 @@ export const ToolRenderer = memo(
           //@ts-expect-error: ts error can ignore with -D
           return <Weather {...part.output} />;
         }
+        if (part.state === "output-error") {
+          return (
+            <div className="p-4 bg-red-100 text-red-800 rounded">
+              Failed to fetch weather data. Please try again.
+            </div>
+          );
+        }
         if (part.state === "approval-requested") {
           if (part.state === "approval-requested") {
             const input = part.input as { location?: string };
             return (
               <ApprovalUI_Simple
-                location={input.location}
+                title="Weather Data Approval"
+                subTitle={`Do you want to proceed with the weather data for ${input.location}?`}
                 onApprove={() =>
                   addToolApprovalResponse({
                     id: part.approval.id,
@@ -52,49 +60,71 @@ export const ToolRenderer = memo(
             );
           }
         }
+        return;
 
       case "tool-createFileTool":
         if (part.state === "output-available") {
           //@ts-expect-error: ts error can ignore with -D
           return <GenFile {...part.output} />;
         }
+        if (part.state === "output-error") {
+          return (
+            <div className="p-4 bg-red-100 text-red-800 rounded">
+              Failed to fetch weather data. Please try again.
+            </div>
+          );
+        }
         return;
       case "tool-ragTool":
         return;
 
       case "tool-imageRecognitionTool":
-        return;
-
-      case "tool-webSearchTool":
-        if (part.state === "approval-requested") {
+        if (part.state === "output-error") {
           return (
-            <div key={part?.toolCallId}>
-              {/* <p>Get weather for {part?.input?.location}?</p> */}
-              <button
-                onClick={() =>
-                  addToolApprovalResponse({
-                    id: part?.approval.id,
-                    approved: true,
-                  })
-                }
-              >
-                Approve
-              </button>
-              <button
-                onClick={() =>
-                  addToolApprovalResponse({
-                    id: part?.approval.id,
-                    approved: false,
-                  })
-                }
-              >
-                Deny
-              </button>
+            <div className="p-4 bg-red-100 text-red-800 rounded">
+              Failed to analyze the image. Please try again
             </div>
           );
         }
         return;
+
+      case "tool-webSearchTool":
+        if (part.state === "output-error") {
+          return (
+            <div className="p-4 bg-red-100 text-red-800 rounded">
+              Failed to execute web search. Please try again
+            </div>
+          );
+        }
+        if (part.state === "approval-requested") {
+          return (
+            <ApprovalUI_Simple
+              title="Web Search Approval"
+              subTitle="Want me to use web search for a better answer?"
+              onApprove={() =>
+                addToolApprovalResponse({
+                  id: part.approval.id,
+                  approved: true,
+                })
+              }
+              onDeny={() =>
+                addToolApprovalResponse({
+                  id: part.approval.id,
+                  approved: false,
+                })
+              }
+            />
+          );
+        }
+        return;
       case "tool-createChartTool":
+        if (part.state === "output-error") {
+          return (
+            <div className="p-4 bg-red-100 text-red-800 rounded">
+              Failed to execute create chart tool. Please try again
+            </div>
+          );
+        }
         if (part.state === "output-available") {
           if (status === "ready") {
             //@ts-expect-error: ts error can ignore with -D

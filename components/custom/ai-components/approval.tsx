@@ -1,23 +1,21 @@
 export const ApprovalUI_Simple = ({
-  location,
+  title,
+  subTitle,
   onApprove,
   onDeny,
 }: {
-  location?: string;
+  title?: string;
+  subTitle?: string;
   onApprove: () => void;
   onDeny: () => void;
 }) => (
   <div className="my-4 border rounded-md p-4 bg-white dark:bg-gray-800">
     <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-2">
-      Weather Data
+      {title}
     </h3>
 
     <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
-      Get weather data for{" "}
-      <span className="font-medium text-gray-900 dark:text-white">
-        {location || "this location"}
-      </span>
-      ?
+      {subTitle || "Are you sure you want to proceed?"}
     </p>
 
     <div className="flex gap-2 justify-end">

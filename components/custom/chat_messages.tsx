@@ -55,12 +55,10 @@ const ChatMessages = memo(
               )}
 
               {message?.parts?.map((part, index) => {
-                // const reasoningText = message.parts
-                //   ?.filter((p) => p.type === "reasoning")
-                //   .map((p) => p.text)
-                //   .join("\n");
-
-                // console.log("reasoningText", reasoningText);
+                // const latestReasoning = [...(message.parts || [])]
+                //   .reverse()
+                //   .find((p) => p.type === "reasoning");
+                // console.log("reasoningText", latestReasoning?.text);
                 if (part?.type === "text") {
                   return (
                     <div key={index}>
@@ -95,13 +93,13 @@ const ChatMessages = memo(
                           strong: ({ children }) => (
                             <strong className="font-bold ">{children}</strong>
                           ),
-                          em: ({ children }) => (
-                            <div className="border-l-4 rounded-md px-2 mt-2 bg-textarea">
-                              <em className="italic text-blue-500">
-                                {children}
-                              </em>
-                            </div>
-                          ),
+                          // em: ({ children }) => (
+                          //   <div className="border-l-4 rounded-md px-2 mt-2 bg-textarea">
+                          //     <em className="italic text-blue-500">
+                          //       {children}
+                          //     </em>
+                          //   </div>
+                          // ),
                           table: ({ children }) => (
                             <table border={1} className=" mt-5 mb-5">
                               {children}
@@ -122,22 +120,34 @@ const ChatMessages = memo(
                               {children}
                             </td>
                           ),
-                          a: ({ href, children }) => (
-                            // <div
-                            //   // href={href}
-                            //   // target="_blank"
-                            //   // rel="noopener noreferrer"
-                            //   className="text-red-400 underline hover:text-blue-300"
-                            // >
-                            //   {/* {children} */}
-                            <FaFilePdf
-                              // onClick={href}
-                              size={40}
-                              color="red"
-                              className="border p-1 border-gray-900 rounded-sm"
-                            />
-                            // </div>
-                          ),
+                          a: ({ href, children }) => {
+                            {
+                              if (part.text.includes("pdf")) {
+                                return (
+                                  <FaFilePdf
+                                    // onClick={href}
+                                    size={40}
+                                    color="red"
+                                    className="border p-1 border-gray-900 rounded-sm"
+                                  />
+                                );
+                              }
+                              if (
+                                part.text.includes("png") ||
+                                part.text.includes("jpg")
+                              ) {
+                                return (
+                                  <img
+                                    className="mb-5"
+                                    alt="image"
+                                    src={children as string}
+                                    width={150}
+                                    height={150}
+                                  ></img>
+                                );
+                              }
+                            }
+                          },
 
                           ul: ({ children }) => (
                             <ul className="list-disc ">{children}</ul>
@@ -190,13 +200,9 @@ const ChatMessages = memo(
                   );
                 }
 
-                
                 if (part?.type === "reasoning") {
                   return (
-                    <div
-                      key={index}
-                      className="text-gray-500 italic text-sm border-l-2 rounded-sm mb-2  border border-l-red-500 p-2"
-                    >
+                    <div className="text-gray-500 italic text-sm border-l-2 rounded-sm mb-2  border border-l-red-500 p-2">
                       <Accordion
                         type="single"
                         collapsible
@@ -209,6 +215,9 @@ const ChatMessages = memo(
                           </AccordionTrigger>
                           <AccordionContent className="h-full">
                             <ReactMarkdown>{part.text}</ReactMarkdown>
+                            {/* <ReactMarkdown>
+                              {latestReasoning?.text}
+                            </ReactMarkdown> */}
                           </AccordionContent>
                         </AccordionItem>
                       </Accordion>

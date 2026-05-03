@@ -66,7 +66,7 @@ export const imageRecognitionTool = createTool({
     const groqResult = await groq.chat.completions.create({
       model: "meta-llama/llama-4-scout-17b-16e-instruct",
       stream: false,
-      max_completion_tokens: 50,
+      max_completion_tokens: 250,
       messages: [
         {
           role: "user",
@@ -81,12 +81,12 @@ export const imageRecognitionTool = createTool({
     return groqResult.choices[0].message.content;
   },
 });
-export const webSearchTool = createTool({
+export const webSearchTool = tool({
   description: "web search tool",
   inputSchema: z.object({
     user_prompt: z.string().describe("prompt"),
   }),
-  // needsApproval: true,
+  needsApproval: true,
   execute: async ({ user_prompt }) => {
     const groqResult = await groq.chat.completions.create({
       messages: [
@@ -101,7 +101,6 @@ export const webSearchTool = createTool({
       top_p: 1,
       stream: false,
       // reasoning_effort:"none",
-
       stop: null,
       compound_custom: {
         tools: {

@@ -9,7 +9,6 @@ import { groq } from "@ai-sdk/groq";
 import { tools } from "@/app/helpers/tools";
 import { deltaTime } from "@/app/helpers/format";
 import { TReasoningEffort } from "@/app/types/type";
-import { allTools } from "../experimental_chat/route";
 
 export async function POST(req: Request) {
   try {
@@ -22,10 +21,10 @@ export async function POST(req: Request) {
     } = await req.json();
 
     const modelMessages = await convertToModelMessages(messages);
+
     const pruned = pruneMessages({
       messages: modelMessages,
       reasoning: "all",
-      // toolCalls: "all",
     });
 
     let responseHeaders: any;
@@ -34,7 +33,7 @@ export async function POST(req: Request) {
       // model: groq(settings?.model),
       // maxOutputTokens: 300,
       // model: groq("llama-3.3-70b-versatile"),
-      system: `You are a helpful assistant. use tool if user ask only. `,
+      system: `You are a helpful assistant. use tool if user ask only. You can call multiple tools in sequence if required. `,
       tools,
       providerOptions: {
         groq: {
@@ -76,8 +75,13 @@ export async function POST(req: Request) {
         }
         if (part.type === "reasoning-end") {
           const end = Date.now();
+          const delta = deltaTime(reasoningStart!, end);
+          console.log("reasoning time", delta);
+
+          reasoningStart = null;
+
           return {
-            reasoning_status: `Thought for ${deltaTime(reasoningStart!, end)} seconds`,
+            reasoning_status: `Thought for ${delta} seconds`,
           };
         }
         if (part.type === "start-step") {
