@@ -1,6 +1,5 @@
 "use client";
 import React, { memo, useEffect, useRef, useState } from "react";
-import { useDashboardContext } from "@/app/api/context/dashboard_context";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -8,12 +7,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Theme from "../theme";
 import AgentSettings from "./agent_settings";
 import { TSettings } from "@/app/types/type";
+import { useDashboardContext } from "@/app/context/dashboard_context";
 
 const Settings = memo(() => {
-  console.log("render: Settings Component");
+ 
 
-  const { setSettingOpen,} =
-    useDashboardContext(); // naming must change
+  const { setSettingOpen } = useDashboardContext();
   const clickRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (typeof window === "undefined") return;

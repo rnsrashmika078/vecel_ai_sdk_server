@@ -31,7 +31,7 @@ export async function retriveEmbeddings({
 
     const result = results.documents.flat();
 
-    console.log("results:", results);
+    // console.log("results:", results);
     // console.log("final result:", result);
 
     return result;

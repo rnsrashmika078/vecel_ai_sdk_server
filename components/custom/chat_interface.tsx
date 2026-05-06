@@ -28,13 +28,13 @@ const ChatMessages = dynamic(() => import("./chat_messages"), {
 import Image from "next/image";
 import { TiDelete } from "react-icons/ti";
 import { SiFiles } from "react-icons/si";
-import { useDashboardContext } from "@/app/api/context/dashboard_context";
 import { FaStop } from "react-icons/fa";
 import { generateTitle } from "@/app/helpers/tool_helpers";
 import dynamic from "next/dynamic";
 import { createClient } from "@/app/utils/supabase/client";
 import { upsertMessage } from "@/app/utils/supabase/server_actions";
 import { Metadata } from "next";
+import { useDashboardContext } from "@/app/context/dashboard_context";
 const ChatInterface = memo(
   ({
     initialMessages,
@@ -43,7 +43,6 @@ const ChatInterface = memo(
     initialMessages: TMyUIMessage[];
     chatId: string;
   }) => {
-    console.log("Render: ChatInterface Component");
     const [input, setInput] = useState("");
     const [loading, setLoading] = useState<boolean>(false);
     const [file, setFile] = useState<TFileType | null>(null);

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import { MdOutlineDeleteOutline } from "react-icons/md";
-import { useDashboardContext } from "@/app/api/context/dashboard_context";
+
 import { deleteChat, getChats } from "@/app/utils/supabase/server_actions";
 import {
   Sidebar,
@@ -17,9 +17,10 @@ import {
 import { Edit, Plus, Settings } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { memo, useEffect, useState } from "react";
+import { useDashboardContext } from "@/app/context/dashboard_context";
 
 const AppSidebar = memo(() => {
-  console.log("AppSidebar Component Rendered! ");
+
   const router = useRouter();
   const { setSettingOpen, chats, setChats, activeChat, setActiveChat } =
     useDashboardContext();

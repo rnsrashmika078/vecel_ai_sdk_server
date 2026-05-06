@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
-import { DashboardWrapperContext } from "../api/context/dashboard_context";
 import DashboardClient from "./DashboardClient";
 import { Metadata } from "next";
+import { DashboardWrapperContext } from "../context/dashboard_context";
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
   return (

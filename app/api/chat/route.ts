@@ -76,7 +76,7 @@ export async function POST(req: Request) {
         if (part.type === "reasoning-end") {
           const end = Date.now();
           const delta = deltaTime(reasoningStart!, end);
-          console.log("reasoning time", delta);
+      
 
           reasoningStart = null;
 
@@ -130,7 +130,7 @@ export async function POST(req: Request) {
       },
     });
   } catch (err) {
-    console.log(err);
+
     if (err instanceof Error) {
       throw new Error(err.message);
     }

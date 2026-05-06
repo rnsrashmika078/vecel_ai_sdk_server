@@ -32,6 +32,6 @@ export async function apiFetch(
         }
         return res;
     } catch (err) {
-        console.log(err);
+        // console.log(err);
     }
 }

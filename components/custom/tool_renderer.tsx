@@ -9,7 +9,6 @@ import {
 import Chart from "./ai-components/chart";
 import GenFile from "./ai-components/generated_file";
 import { Weather } from "./ai-components/weather";
-import { useDashboardContext } from "@/app/api/context/dashboard_context";
 import { memo } from "react";
 import { TAddToOutput } from "@/app/types/type";
 import { ApprovalUI_Simple } from "./ai-components/approval";
@@ -91,7 +90,7 @@ export const ToolRenderer = memo(
       case "tool-webSearchTool":
         if (part.state === "output-error") {
           return (
-            <div className="p-4 bg-red-100 text-red-800 rounded">
+            <div className="p-2 mt-2 mb-2 bg-red-100 text-red-800 rounded">
               Failed to execute web search. Please try again
             </div>
           );

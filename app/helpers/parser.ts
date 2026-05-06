@@ -9,7 +9,7 @@ export function inputParser(
     try {
       parse = message.role === "user" ? JSON.parse(part.text) : part;
     } catch (e) {
-      console.log("parse error", e);
+      // console.log("parse error", e);
     }
   }
 

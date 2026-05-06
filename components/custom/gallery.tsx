@@ -11,11 +11,11 @@ import {
   ComboboxList,
 } from "@/components/ui/combobox";
 import { TGalleryItem } from "@/app/types/type";
-import { useDashboardContext } from "@/app/api/context/dashboard_context";
 import { AnimatePresence, motion } from "framer-motion";
 import Spinner from "./spinner";
+import { useDashboardContext } from "@/app/context/dashboard_context";
 const Gallery = memo(() => {
-  console.log("render: Gallery Component");
+
   const { galleryOpen, setGalleryOpen, setSelectedResource } =
     useDashboardContext();
   const [store, setStore] = useState<TGalleryItem[]>([]);
@@ -41,7 +41,7 @@ const Gallery = memo(() => {
     const result = await res.json();
 
     setStore(result.resources);
-    console.log("resource", result.resources);
+   
     setLoading(false);
   }
 

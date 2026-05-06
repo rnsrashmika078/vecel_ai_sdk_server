@@ -1,10 +1,11 @@
 import { z } from "zod";
 import { tool as createTool, tool } from "ai";
 import { createFile } from "./file_operation";
-import { storeEmbeddings } from "../actions/store";
-import { retriveEmbeddings } from "../actions/retrive";
 import { requestWeatherAPI } from "./tool_helpers";
 import { groq } from "../utils/groqClient";
+import { storeEmbeddings } from "./store";
+import { retriveEmbeddings } from "./retrive";
+
 
 ///client side tools
 export const askForConfirmation = createTool({

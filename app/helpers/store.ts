@@ -24,15 +24,15 @@ export async function storeEmbeddings({ url }: { url: string }) {
       return NextResponse.json({ success: true, error: "Embedding Exist" });
 
     const data = await readPDF(url);
-    console.log(`data : ${data}`);
+
 
     if (!data)
       return NextResponse.json({ success: false, error: "No text provided" });
 
     const chunks = await splitter.splitText(data);
-    console.log(`chunks : ${chunks}`);
+   
     const vectors = await embeddings.embedDocuments(chunks);
-    console.log(`vectors : ${vectors}`);
+
 
     const ids = chunks.map(() => crypto.randomUUID());
     await (

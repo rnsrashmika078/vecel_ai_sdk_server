@@ -18,6 +18,6 @@ export async function POST(req: Request) {
       title: text,
     });
   } catch (e) {
-    console.log(e instanceof Error ? e.message : "error while calling model");
+    // console.log(e instanceof Error ? e.message : "error while calling model");
   }
 }

@@ -18,7 +18,6 @@ export async function POST(req: Request) {
     system: `You are a helpful assistant. use tool if user ask only. `,
     tools: allTools,
   });
-  console.log("result", await result.text);
 
   return result.toUIMessageStreamResponse();
 }
