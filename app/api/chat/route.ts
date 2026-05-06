@@ -33,7 +33,7 @@ export async function POST(req: Request) {
       // model: groq(settings?.model),
       // maxOutputTokens: 300,
       // model: groq("llama-3.3-70b-versatile"),
-      system: `You are a helpful assistant. use tool if user ask only. You can call multiple tools in sequence if required. `,
+      system: `You are a helpful assistant. use tool if user ask only. You can call multiple tools in sequence if required.dont use tabular format `,
       tools,
       providerOptions: {
         groq: {
@@ -76,7 +76,6 @@ export async function POST(req: Request) {
         if (part.type === "reasoning-end") {
           const end = Date.now();
           const delta = deltaTime(reasoningStart!, end);
-      
 
           reasoningStart = null;
 
@@ -130,7 +129,6 @@ export async function POST(req: Request) {
       },
     });
   } catch (err) {
-
     if (err instanceof Error) {
       throw new Error(err.message);
     }

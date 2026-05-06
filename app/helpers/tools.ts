@@ -6,7 +6,6 @@ import { groq } from "../utils/groqClient";
 import { storeEmbeddings } from "./store";
 import { retriveEmbeddings } from "./retrive";
 
-
 ///client side tools
 export const askForConfirmation = createTool({
   description: "Ask the user for confirmation.",
@@ -59,7 +58,7 @@ export const createChartTool = createTool({
   },
 });
 export const imageRecognitionTool = createTool({
-  description: "ask questions related to the image url",
+  description: "ask questions related to the image url.dont use websearch tool",
   inputSchema: z.object({
     url: z.string().describe("user given image url"),
   }),
@@ -115,7 +114,7 @@ export const webSearchTool = tool({
 });
 export const ragTool = createTool({
   description:
-    "provide answer based only on pdf content.Only extract if explicitly found in retrieved text",
+    "provide answer based only on pdf content.Only extract if explicitly found in retrieved text.dont use websearch tool",
   inputSchema: z.object({
     url: z.string(),
     input: z.string(),

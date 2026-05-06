@@ -12,7 +12,7 @@ const MarkDown = ({ part }: MarkdownTypes) => {
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
       components={{
-        p: ({ children }) => <p className="leading-relaxed">{children}</p>,
+        p: ({ children }) => <p className="leading-relaxed m-2">{children}</p>,
 
         h1: ({ children }) => (
           <h1 className="text-2xl font-bold">{children}</h1>
@@ -45,14 +45,17 @@ const MarkDown = ({ part }: MarkdownTypes) => {
           </table>
         ),
         th: ({ children }) => (
-          <th className="border-2 border-blue-500 px-0 md:p-3 ">{children}</th>
+          <th className=" border-blue-500 px-0 bg-white text-black">
+            {children}
+          </th>
         ),
         tr: ({ children }) => (
-          <tr className="border-2 border-blue-500  px-0 md:p-3">{children}</tr>
+          <tr className=" border-blue-500  px-0 md:p-3">{children}</tr>
         ),
         td: ({ children }) => (
-          <td className=" border-2 border-blue-500 px-0 md:p-3">{children}</td>
+          <td className="  border-blue-500 px-0 md:p-3">{children}</td>
         ),
+        br: ({ children }) => <br className="">{children}</br>,
         a: ({ href, children }) => {
           {
             if (part.text.includes("pdf")) {
@@ -88,8 +91,6 @@ const MarkDown = ({ part }: MarkdownTypes) => {
         blockquote: ({ children }) => (
           <blockquote className="">{children}</blockquote>
         ),
-
-        br: ({ children }) => <br className="">{children}</br>,
 
         hr: () => <hr className="border-gray-600 my-4" />,
 
